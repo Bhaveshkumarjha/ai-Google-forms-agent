@@ -19,7 +19,7 @@ log = logging.getLogger(__name__)
 FORMS_API = "https://forms.googleapis.com/v1"
 TOKEN_URL = "https://oauth2.googleapis.com/token"
 REVOKE_URL = "https://oauth2.googleapis.com/revoke"
-FORMS_SCOPE = "https://www.googleapis.com/auth/forms.body"
+FORMS_SCOPE = "https://www.googleapis.com/auth/drive.file"
 TIMEOUT = (5, 30)
 CHUNK = 40  # requests per batchUpdate call
 
