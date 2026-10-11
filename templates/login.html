@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block title %}Sign in{% endblock %}
+{% block public_content %}
+<div class="mx-auto" style="max-width: 420px;">
+  <div class="card shadow-sm"><div class="card-body p-4">
+    <h1 class="h4 mb-1">Sign in</h1>
+    <p class="text-secondary">Use your Google account. We request only: your basic profile and permission to create and edit the Google Forms we make for you.</p>
+    {% if google_ready %}
+      <a class="btn btn-primary w-100" href="{{ url_for('auth.google_start') }}">Continue with Google</a>
+    {% else %}
+      <div class="alert alert-warning mb-0">Google sign-in is not configured yet. Set GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET in .env.</div>
+    {% endif %}
+    {% if dev_login %}
+      <hr>
+      <form method="post" action="{{ url_for('auth.dev_login') }}">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        
+      </form>
+    {% endif %}
+  </div></div>
+</div>
+{% endblock %}

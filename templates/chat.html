@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% block title %}AI chat{% endblock %}
+{% block content %}
+<div class="chat-wrap" id="chat" data-message-url="{{ url_for('main.chat_message', draft_id=draft.id) }}" data-upload-url="{{ url_for('main.chat_upload', draft_id=draft.id) }}" data-preview-url="{{ url_for('main.preview', draft_id=draft.id) }}">
+  <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-2">
+    <h1 class="h4 mb-0">AI form assistant</h1>
+    <a id="preview-btn" class="btn btn-success btn-sm {{ '' if draft.spec else 'd-none' }}" href="{{ url_for('main.preview', draft_id=draft.id) }}">Open preview</a>
+  </div>
+  <div class="alert alert-light border small mb-2">
+    Tip: describe the form, or paste your own questions with options
+    (<code>Question 1: ... A. ... B. ...</code>), or upload a PDF, DOCX or TXT (max 10 MB).
+    {% if not ai_ready %}<br><strong>AI is not configured on this server.</strong> You can still write a simple field list (for example <code>form with name, email, phone and roll no</code>) or paste questions with options.{% endif %}
+    <br>Do not paste confidential or personal data: free Gemini API usage may be used by Google to improve its products.
+  </div>
+  <div id="messages" class="messages card">
+    <div class="msg assistant"><div class="bubble">Hi! Tell me what form you need, for example: "Student registration form with name, email, roll number and class", or "Python quiz with 10 multiple-choice questions".</div></div>
+    {% for m in messages %}
+      <div class="msg {{ m.role }}"><div class="bubble">{{ m.content }}</div></div>
+    {% endfor %}
+  </div>
+  <div id="status" class="small text-secondary my-1" aria-live="polite"></div>
+  <form id="composer" class="composer">
+    <textarea id="text" class="form-control" rows="2" maxlength="20000" placeholder="Type your requirements..."></textarea>
+    <div class="d-flex flex-column gap-1">
+      <button class="btn btn-primary" id="send" type="submit">Send</button>
+      <label class="btn btn-outline-secondary btn-sm mb-0" for="file">Upload</label>
+      <input id="file" type="file" class="d-none" accept=".pdf,.docx,.txt">
+    </div>
+  </form>
+</div>
+{% endblock %}
+{% block scripts %}<script src="{{ url_for('static', filename='chat.js') }}"></script>{% endblock %}

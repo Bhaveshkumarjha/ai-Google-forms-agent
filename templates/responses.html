@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% block title %}Responses{% endblock %}
+{% block content %}
+<div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+  <div>
+    <h1 class="h4 mb-0">{{ form.title }}: responses</h1>
+    <div class="text-secondary small">{{ form.submissions|length }} response(s) · custom form hosted on this website</div>
+  </div>
+  <div class="d-flex gap-2">
+    <a class="btn btn-outline-secondary btn-sm" href="{{ url_for('main.responses_csv', form_id=form.id) }}">Download CSV</a>
+    <a class="btn btn-outline-secondary btn-sm" href="{{ url_for('main.forms_history') }}">Back</a>
+  </div>
+</div>
+<div class="card"><div class="table-responsive">
+<table class="table table-sm align-middle mb-0">
+  <thead><tr>
+    <th>Submitted (UTC)</th>
+    {% for q in questions %}<th>{{ q.text }}</th>{% endfor %}
+    {% if form.spec.is_quiz %}<th>Score</th>{% endif %}
+  </tr></thead>
+  <tbody>
+  {% for s in form.submissions|reverse %}
+    <tr>
+      <td class="text-nowrap">{{ s.created_at.strftime('%d %b %Y %H:%M') }}</td>
+      {% for q in questions %}
+        {% set key = 'q' ~ loop.index %}
+        <td>
+          {% if q.type == 'file_upload' %}
+            {% set f = s.files.get(key) %}
+            {% if f %}<a href="{{ url_for('main.download_file', form_id=form.id, sub_id=s.id, qkey=key) }}">{{ f.original }}</a> <span class="text-secondary small">({{ (f.size / 1024 / 1024)|round(2) }} MB)</span>{% endif %}
+          {% else %}
+            {% set v = s.answers.get(key) %}
+            {{ v|join(', ') if v is iterable and v is not string else v }}
+          {% endif %}
+        </td>
+      {% endfor %}
+      {% if form.spec.is_quiz %}<td>{% if s.score is not none %}{{ s.score }}/{{ s.max_score }}{% endif %}</td>{% endif %}
+    </tr>
+  {% else %}
+    <tr><td colspan="{{ questions|length + 2 }}" class="text-secondary p-4">No responses yet. Share the live link to collect some.</td></tr>
+  {% endfor %}
+  </tbody>
+</table></div></div>
+{% endblock %}

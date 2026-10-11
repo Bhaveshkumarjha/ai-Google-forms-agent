@@ -1,0 +1,50 @@
+{% extends 'public_base.html' %}
+{% block title %}{{ form.title }}{% endblock %}
+{% block body %}
+<div class="card shadow-sm"><div class="card-body p-4">
+  <h1 class="h4">{{ form.title }}</h1>
+  {% if form.description %}<p class="text-secondary" style="white-space: pre-line;">{{ form.description }}</p>{% endif %}
+  {% if errors %}
+    <div class="alert alert-danger"><ul class="mb-0">{% for e in errors %}<li>{{ e }}</li>{% endfor %}</ul></div>
+  {% endif %}
+  <form method="post" enctype="multipart/form-data" novalidate>
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    {% for q in spec.questions %}
+      {% set key = 'q' ~ loop.index %}
+      <div class="mb-4">
+        <label class="form-label fw-semibold" for="{{ key }}">{{ q.text }}{% if q.required %} <span class="text-danger">*</span>{% endif %}</label>
+        {% if q.type == 'short_answer' %}
+          <input class="form-control" id="{{ key }}" name="{{ key }}" maxlength="5000" value="{{ values.get(key, '') }}">
+        {% elif q.type == 'email' %}
+          <input class="form-control" id="{{ key }}" type="email" name="{{ key }}" maxlength="320" value="{{ values.get(key, '') }}">
+        {% elif q.type == 'paragraph' %}
+          <textarea class="form-control" id="{{ key }}" name="{{ key }}" rows="4" maxlength="5000">{{ values.get(key, '') }}</textarea>
+        {% elif q.type == 'dropdown' %}
+          <select class="form-select" id="{{ key }}" name="{{ key }}">
+            <option value="">Choose...</option>
+            {% for o in q.options %}<option value="{{ o }}" {{ 'selected' if values.get(key) == o }}>{{ o }}</option>{% endfor %}
+          </select>
+        {% elif q.type in ('multiple_choice', 'true_false') %}
+          {% for o in q.options %}
+            <div class="form-check">
+              <input class="form-check-input" type="radio" name="{{ key }}" id="{{ key }}-{{ loop.index }}" value="{{ o }}" {{ 'checked' if values.get(key) == o }}>
+              <label class="form-check-label" for="{{ key }}-{{ loop.index }}">{{ o }}</label>
+            </div>
+          {% endfor %}
+        {% elif q.type == 'checkbox' %}
+          {% for o in q.options %}
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" name="{{ key }}" id="{{ key }}-{{ loop.index }}" value="{{ o }}" {{ 'checked' if o in (values.get(key) or []) }}>
+              <label class="form-check-label" for="{{ key }}-{{ loop.index }}">{{ o }}</label>
+            </div>
+          {% endfor %}
+        {% elif q.type == 'file_upload' %}
+          <input class="form-control" id="{{ key }}" type="file" name="{{ key }}" accept=".pdf,.docx,.txt,.png,.jpg,.jpeg">
+          <div class="form-text">PDF, DOCX, TXT, PNG or JPG, up to 10 MB.</div>
+        {% endif %}
+      </div>
+    {% endfor %}
+    <button class="btn btn-primary">Submit</button>
+  </form>
+</div></div>
+{% endblock %}

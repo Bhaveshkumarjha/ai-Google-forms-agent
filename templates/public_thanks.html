@@ -1,0 +1,9 @@
+{% extends 'public_base.html' %}
+{% block title %}Thank you{% endblock %}
+{% block body %}
+<div class="card shadow-sm"><div class="card-body p-4 text-center">
+  <h1 class="h4 text-success">Response submitted</h1>
+  <p class="mb-1">Thank you. Your response to "{{ form.title }}" has been recorded.</p>
+  {% if score is not none %}<p class="fs-5 mb-0">Your score: <strong>{{ score }}/{{ max_score }}</strong></p>{% endif %}
+</div></div>
+{% endblock %}

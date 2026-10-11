@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% block title %}Form created{% endblock %}
+{% block content %}
+<div class="mx-auto" style="max-width: 720px;">
+  {% if form.status == 'published' %}
+    <div class="alert alert-success"><strong>Success.</strong> Your form is live.</div>
+  {% else %}
+    <div class="alert alert-warning">
+      <strong>Needs attention.</strong> {{ form.error }}
+    </div>
+  {% endif %}
+  <div class="card"><div class="card-body">
+    <h1 class="h4">{{ form.title }}</h1>
+    <dl class="row mb-0">
+      <dt class="col-sm-3">Type</dt>
+      <dd class="col-sm-9"><span class="badge {{ 'text-bg-primary' if form.kind == 'google' else 'text-bg-secondary' }}">{{ 'Google Form' if form.kind == 'google' else 'Custom form (hosted here)' }}</span></dd>
+      <dt class="col-sm-3">Status</dt>
+      <dd class="col-sm-9">{{ {'published': 'Published', 'partial': 'Created, not finished', 'failed': 'Failed'}.get(form.status, form.status) }}</dd>
+      <dt class="col-sm-3">Created</dt>
+      <dd class="col-sm-9">{{ form.created_at.strftime('%d %b %Y, %H:%M') }} UTC</dd>
+      {% if form.status == 'published' and form.responder_url %}
+      <dt class="col-sm-3">Live link</dt>
+      <dd class="col-sm-9"><input class="form-control form-control-sm" id="live-link" readonly value="{{ form.responder_url }}"></dd>
+      {% endif %}
+    </dl>
+    <div class="d-flex flex-wrap gap-2 mt-3">
+      {% if form.status == 'published' and form.responder_url %}
+        <button class="btn btn-primary" type="button" data-copy="#live-link">Copy Link</button>
+        <a class="btn btn-outline-primary" href="{{ form.responder_url }}" target="_blank" rel="noopener">Open Form</a>
+      {% endif %}
+      {% if form.edit_url %}<a class="btn btn-outline-secondary" href="{{ form.edit_url }}" target="_blank" rel="noopener">Edit in Google Forms</a>{% endif %}
+      {% if form.kind == 'custom' %}<a class="btn btn-outline-secondary" href="{{ url_for('main.responses', form_id=form.id) }}">View responses</a>{% endif %}
+      <form method="post" action="{{ url_for('main.chat_new') }}" class="m-0">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <button class="btn btn-link">Create another</button>
+      </form>
+    </div>
+  </div></div>
+</div>
+{% endblock %}

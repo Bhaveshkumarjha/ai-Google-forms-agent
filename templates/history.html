@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% block title %}My forms{% endblock %}
+{% block content %}
+<div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+  <h1 class="h4 mb-0">My forms</h1>
+  <form method="get" class="d-flex gap-2">
+    <input class="form-control form-control-sm" type="search" name="q" value="{{ q }}" placeholder="Search by title" maxlength="100">
+    <button class="btn btn-outline-secondary btn-sm">Search</button>
+  </form>
+</div>
+<div class="card"><div class="table-responsive">
+<table class="table align-middle mb-0">
+  <thead><tr><th>Title</th><th>Type</th><th>Status</th><th>Created</th><th>Responses</th><th class="text-end">Actions</th></tr></thead>
+  <tbody>
+  {% for f in forms %}
+    <tr>
+      <td class="fw-semibold">{{ f.title }}</td>
+      <td><span class="badge {{ 'text-bg-primary' if f.kind == 'google' else 'text-bg-secondary' }}">{{ 'Google Form' if f.kind == 'google' else 'Custom' }}</span></td>
+      <td>{{ {'published': 'Published', 'partial': 'Needs attention', 'failed': 'Failed'}.get(f.status, f.status) }}</td>
+      <td>{{ f.created_at.strftime('%d %b %Y') }}</td>
+      <td>{% if f.kind == 'custom' %}{{ counts.get(f.id, 0) }}{% else %}<span class="text-secondary small">in Google</span>{% endif %}</td>
+      <td class="text-end">
+        <div class="d-inline-flex flex-wrap gap-1 justify-content-end">
+          {% if f.responder_url and f.status == 'published' %}
+            <button class="btn btn-sm btn-outline-secondary" type="button" data-copy-text="{{ f.responder_url }}">Copy link</button>
+            <a class="btn btn-sm btn-outline-primary" href="{{ f.responder_url }}" target="_blank" rel="noopener">Open</a>
+          {% endif %}
+          {% if f.edit_url %}<a class="btn btn-sm btn-outline-secondary" href="{{ f.edit_url }}" target="_blank" rel="noopener">Edit</a>{% endif %}
+          {% if f.kind == 'custom' %}<a class="btn btn-sm btn-outline-secondary" href="{{ url_for('main.responses', form_id=f.id) }}">Responses</a>{% endif %}
+          <form method="post" action="{{ url_for('main.delete_form', form_id=f.id) }}" data-confirm="{{ 'Delete this form and all its responses?' if f.kind == 'custom' else 'Remove this form from your history? It stays in Google Forms.' }}" class="m-0">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <button class="btn btn-sm btn-outline-danger">Delete</button>
+          </form>
+        </div>
+      </td>
+    </tr>
+  {% else %}
+    <tr><td colspan="6" class="text-secondary p-4">{{ 'No forms match your search.' if q else 'No forms yet.' }}</td></tr>
+  {% endfor %}
+  </tbody>
+</table></div></div>
+{% endblock %}
