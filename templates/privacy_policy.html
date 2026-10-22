@@ -3,80 +3,389 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>Privacy Policy | FormPilot AI</title>
+    <meta name="description" content="Read the FormPilot AI Privacy Policy to understand how information is collected, used, stored, and protected when creating Google Forms.">
+
     <style>
+        * {
+            box-sizing: border-box;
+        }
+
         body {
-            font-family: Arial, sans-serif;
-            max-width: 850px;
-            margin: 40px auto;
-            padding: 20px;
-            line-height: 1.7;
-            color: #26334a;
-            background: #f8fafc;
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            background: #f5f7fb;
+            color: #263247;
+            line-height: 1.75;
         }
-        main {
-            background: white;
-            padding: 30px;
+
+        header {
+            background: #ffffff;
+            border-bottom: 1px solid #e5e7eb;
+            padding: 18px 24px;
+        }
+
+        .nav {
+            max-width: 1050px;
+            margin: auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+        }
+
+        .brand {
+            font-size: 23px;
+            font-weight: 700;
+            color: #4338ca;
+            text-decoration: none;
+        }
+
+        nav a {
+            color: #475569;
+            text-decoration: none;
+            margin-left: 18px;
+            font-size: 14px;
+        }
+
+        nav a:hover {
+            color: #4338ca;
+        }
+
+        .hero {
+            background: linear-gradient(135deg, #eef2ff, #f8fafc);
+            text-align: center;
+            padding: 55px 20px 45px;
+        }
+
+        .hero h1 {
+            margin: 0 0 10px;
+            color: #172554;
+            font-size: clamp(30px, 5vw, 42px);
+        }
+
+        .hero p {
+            color: #64748b;
+            margin: 0;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 35px auto;
+            padding: 0 20px;
+        }
+
+        .policy {
+            background: #ffffff;
+            padding: 35px;
+            border: 1px solid #e5e7eb;
             border-radius: 14px;
+            box-shadow: 0 5px 24px rgba(15, 23, 42, 0.04);
         }
-        a { color: #4f46e5; }
+
+        .updated {
+            background: #f8fafc;
+            padding: 14px 18px;
+            border-radius: 8px;
+            color: #475569;
+            font-size: 14px;
+            margin-bottom: 28px;
+        }
+
+        h2 {
+            color: #312e81;
+            font-size: 21px;
+            margin-top: 30px;
+            margin-bottom: 10px;
+        }
+
+        h3 {
+            color: #334155;
+            font-size: 17px;
+        }
+
+        p, li {
+            font-size: 15px;
+        }
+
+        a {
+            color: #4338ca;
+            overflow-wrap: anywhere;
+        }
+
+        .contact {
+            background: #eef2ff;
+            padding: 22px;
+            border-radius: 10px;
+            margin-top: 25px;
+        }
+
+        footer {
+            text-align: center;
+            padding: 28px 20px;
+            color: #64748b;
+            font-size: 14px;
+        }
+
+        footer a {
+            margin: 0 8px;
+            text-decoration: none;
+        }
+
+        @media (max-width: 600px) {
+            .nav {
+                flex-direction: column;
+            }
+
+            nav a {
+                margin: 0 8px;
+            }
+
+            .policy {
+                padding: 22px 18px;
+            }
+
+            .hero {
+                padding: 38px 16px;
+            }
+        }
     </style>
 </head>
+
 <body>
-<main>
+
+<header>
+    <div class="nav">
+        <a class="brand" href="/">FormPilot AI</a>
+
+        <nav>
+            <a href="/">Home</a>
+            <a href="/terms">Terms of Service</a>
+        </nav>
+    </div>
+</header>
+
+<section class="hero">
     <h1>Privacy Policy</h1>
-    <p>Last updated: October 22, 2026</p>
+    <p>Your privacy matters to us.</p>
+</section>
 
-    <p>FormPilot AI helps users create Google Forms and custom
-    forms through conversational instructions.</p>
+<main class="container">
+    <article class="policy">
 
-    <h2>Information We Handle</h2>
-    <p>Depending on how you use the service, we may process
-    account information, form instructions, form content,
-    uploaded files, and technical information needed to
-    operate and secure the service.</p>
+        <div class="updated">
+            <strong>Effective Date:</strong> October 22, 2026<br>
+            <strong>Last Updated:</strong> October 22, 2026
+        </div>
 
-    <h2>Google Account Access</h2>
-    <p>If you connect your Google Account, FormPilot AI requests
-    the Google permissions displayed during authorization.
-    These permissions are used to provide the Google Forms
-    features you request. Google handles its own account
-    authentication and authorization processes.</p>
+        <p>
+            Welcome to FormPilot AI ("we", "our", or "us").
+            FormPilot AI is a web application designed to help users
+            create Google Forms using natural-language instructions.
+            This Privacy Policy explains how information may be
+            collected, used, stored, and shared when you use our service.
+        </p>
 
-    <h2>How Information Is Used</h2>
-    <p>Information is used to provide requested features,
-    create forms, maintain security, troubleshoot errors,
-    and operate the service.</p>
+        <h2>1. Information We Collect</h2>
 
-    <h2>Storage and Security</h2>
-    <p>Information may be processed or stored by the hosting,
-    database, file-storage, and other service providers used
-    by FormPilot AI. Appropriate safeguards should be
-    maintained to protect stored information.</p>
+        <h3>Account and Sign-In Information</h3>
+        <p>
+            When you sign in using Google, we may receive basic profile
+            information, such as your name and email address, depending
+            on the permissions requested and granted.
+        </p>
 
-    <h2>Sharing</h2>
-    <p>Information may be processed by service providers
-    necessary to operate the application, or disclosed where
-    legally required. We do not sell personal information.</p>
+        <h3>Form Creation Instructions</h3>
+        <p>
+            We process the prompts and instructions you submit to generate
+            forms. These may include form titles, descriptions, questions,
+            answer options, and other details you provide.
+        </p>
 
-    <h2>Retention and Deletion</h2>
-    <p>Information is retained only as needed for the purposes
-    described in this policy and applicable legal obligations.
-    For account or data deletion requests, contact us using
-    the email address below.</p>
+        <h3>Google Account Data</h3>
+        <p>
+            If you authorize Google API access, FormPilot AI accesses
+            only the data and functionality allowed by the permissions
+            shown during authorization. These permissions may allow
+            the application to create or manage Google Forms.
+        </p>
 
-    <h2>Your Choices</h2>
-    <p>You can choose whether to connect your Google Account
-    and can manage third-party access through your Google
-    Account settings.</p>
+        <h3>Technical Information</h3>
+        <p>
+            Application infrastructure may process technical information,
+            such as browser type, IP address, timestamps, request logs,
+            and error information, for security and troubleshooting.
+            The information actually collected depends on our configuration.
+        </p>
 
-    <h2>Contact</h2>
-    <p>Privacy questions or requests:
-       <strong>bhaveshkumarjha4@gmail.com</strong></p>
+        <h2>2. How We Use Information</h2>
+        <p>Information may be used to:</p>
+        <ul>
+            <li>Authenticate users and manage application access.</li>
+            <li>Understand form creation instructions.</li>
+            <li>Create Google Forms using permissions you grant.</li>
+            <li>Display generated forms and related links.</li>
+            <li>Maintain security and troubleshoot technical problems.</li>
+            <li>Respond to support requests and meet legal obligations.</li>
+        </ul>
 
-    <p><a href="/">Back to FormPilot AI</a> |
-       <a href="/terms">Terms of Service</a></p>
+        <h2>3. Google API Services User Data Policy</h2>
+        <p>
+            FormPilot AI's use and transfer of information received
+            from Google APIs will comply with the Google API Services
+            User Data Policy, including its Limited Use requirements
+            where applicable.
+        </p>
+        <p>
+            We do not sell Google user data or use it for advertising.
+            We do not transfer Google user data to third parties for
+            advertising purposes.
+        </p>
+        <p>
+            Human access to Google user data is restricted to circumstances
+            permitted by Google's policies, such as when the user provides
+            the required consent, when necessary for security, or when
+            required by law.
+        </p>
+
+        <h2>4. Data Storage and Retention</h2>
+        <p>
+            Information may be processed by our application server,
+            database, hosting provider, or other services necessary
+            to operate FormPilot AI.
+        </p>
+        <p>
+            The categories of information stored and the retention period
+            depend on the application's actual configuration and the
+            purpose for which the information is needed. We retain
+            information only for as long as reasonably necessary for
+            service operation, security, and applicable legal obligations.
+        </p>
+        <p>
+            When information is no longer required, we will delete it
+            or take appropriate steps to remove identifying information,
+            subject to applicable legal requirements.
+        </p>
+
+        <h2>5. Sharing of Information</h2>
+        <p>
+            We do not sell personal information or Google user data.
+            Information may be processed by service providers that help
+            operate the application, such as hosting, database,
+            authentication, or AI service providers, where applicable.
+        </p>
+        <p>
+            Information may also be disclosed when required by law or
+            when reasonably necessary to protect the security of the
+            service and its users.
+        </p>
+
+        <h2>6. Third-Party Services</h2>
+        <p>
+            FormPilot AI may use Google Sign-In and Google Forms APIs
+            to provide its features. Third-party services operate under
+            their own applicable terms and privacy policies.
+        </p>
+        <p>
+            Google Privacy Policy:
+            <a href="https://policies.google.com/privacy"
+               target="_blank" rel="noopener noreferrer">
+                https://policies.google.com/privacy
+            </a>
+        </p>
+
+        <h2>7. Data Security</h2>
+        <p>
+            We take reasonable technical and organizational measures
+            intended to protect information against unauthorized access,
+            loss, misuse, or disclosure. However, no internet-based
+            service can guarantee absolute security.
+        </p>
+
+        <h2>8. Your Choices and Google Access</h2>
+        <p>
+            You can stop using FormPilot AI at any time. You can review
+            or revoke the application's access to your Google Account
+            through Google's account connections page.
+        </p>
+        <p>
+            <a href="https://myaccount.google.com/connections"
+               target="_blank" rel="noopener noreferrer">
+                Manage Google Account Connections
+            </a>
+        </p>
+        <p>
+            Revoking access may disable features that depend on Google
+            APIs. It does not automatically delete information already
+            stored by FormPilot AI.
+        </p>
+
+        <h2>9. Data Deletion Requests</h2>
+        <p>
+            You may request access to, correction of, or deletion of
+            personal information associated with your use of FormPilot AI,
+            subject to applicable law.
+        </p>
+        <p>
+            Send a request to our contact email with the subject
+            "FormPilot AI - Data Deletion Request". Do not include
+            passwords or Google access tokens in your request.
+        </p>
+        <p>
+            We will review requests and respond within a reasonable
+            period. Some information may need to be retained where
+            required by law or necessary for legitimate security purposes.
+        </p>
+
+        <h2>10. Children's Privacy</h2>
+        <p>
+            FormPilot AI is not intended to knowingly collect personal
+            information from children in violation of applicable law.
+            If you believe a child has provided information inappropriately,
+            contact us so that we can review the matter.
+        </p>
+
+        <h2>11. Changes to This Policy</h2>
+        <p>
+            We may update this Privacy Policy when our application,
+            data practices, or legal obligations change. Updates will
+            be published on this page with a revised "Last Updated" date.
+        </p>
+
+        <h2>12. Contact Us</h2>
+        <div class="contact">
+            <p><strong>Application:</strong> FormPilot AI</p>
+            <p>
+                <strong>Email:</strong>
+                <a href="mailto:bhaveshkumarjha4@gmail.com">
+                    bhaveshkumarjha4@gmail.com
+                </a>
+            </p>
+            <p>
+                <strong>Privacy Policy:</strong>
+                <a href="https://formpilotai.onrender.com/privacy-policy">
+                    https://formpilotai.onrender.com/privacy-policy
+                </a>
+            </p>
+            <p>
+                <strong>Homepage:</strong>
+                <a href="https://formpilotai.onrender.com/">
+                    https://formpilotai.onrender.com/
+                </a>
+            </p>
+        </div>
+
+    </article>
 </main>
+
+<footer>
+    <p>&copy; 2026 FormPilot AI. All rights reserved.</p>
+    <a href="/">Home</a>
+    <a href="/terms">Terms of Service</a>
+    <a href="/privacy-policy">Privacy Policy</a>
+</footer>
+
 </body>
 </html>
