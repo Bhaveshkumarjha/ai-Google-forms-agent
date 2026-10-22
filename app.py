@@ -1,9 +1,8 @@
-
 """AI Forms Agent: create real Google Forms (and custom forms) by chatting with an AI."""
 import logging
 import os
 
-from flask import Flask, jsonify, render_template, request
+from flask import Flask, Response, jsonify, render_template, request
 from werkzeug.exceptions import HTTPException
 from werkzeug.middleware.proxy_fix import ProxyFix
 
@@ -78,6 +77,14 @@ def create_app(test_config=None):
     app.register_blueprint(auth_bp)
     app.register_blueprint(main_bp)
     app.register_blueprint(public_bp)
+
+    # Google Search Console verification
+    @app.route("/googlecd9fb3dcbfa79372.html")
+    def google_verification():
+        return Response(
+            "google-site-verification: googlecd9fb3dcbfa79372.html",
+            mimetype="text/html",
+        )
 
     # Privacy Policy page
     @app.route("/privacy-policy")
