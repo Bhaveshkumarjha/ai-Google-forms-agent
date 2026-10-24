@@ -16,46 +16,44 @@
 <a class="skip" href="#main">Skip to content</a>
 
 <header class="nav" data-nav>
-  <div class="wrap nav-inner">
-    <a class="brand" href="{{ url_for('main.landing') }}" aria-label="FormPilot AI, home">
-      <svg class="mark" viewBox="0 0 32 32" width="28" height="28" aria-hidden="true">
-        <rect width="32" height="32" rx="8" fill="currentColor"/>
-        <rect x="7" y="7" width="18" height="18" rx="3" fill="none" stroke="#FAF9F6" stroke-width="2.4"/>
-        <path d="M11.5 16.5l3.2 3.2 6-7" fill="none" stroke="#FAF9F6" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
-      </svg>
-      <span>FormPilot AI</span>
-    </a>
+  <div class="wrap">
+    <div class="nav-inner">
+      <a class="brand" href="#main" aria-label="FormPilot AI, top of page">
+        <svg class="mark" viewBox="0 0 32 32" width="28" height="28" aria-hidden="true"><rect width="32" height="32" rx="8" fill="currentColor"/><rect x="7" y="7" width="18" height="18" rx="3" fill="none" stroke="#FAF9F6" stroke-width="2.4"/><path d="M11.5 16.5l3.2 3.2 6-7" fill="none" stroke="#FAF9F6" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span>FormPilot AI</span>
+      </a>
 
-    <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-menu" data-nav-toggle>
-      <span class="sr">Menu</span>
-      <span class="nav-toggle-bar"></span>
-      <span class="nav-toggle-bar"></span>
-      <span class="nav-toggle-bar"></span>
-    </button>
+      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-menu" data-nav-toggle>
+        <span class="sr">Menu</span>
+        <span class="nav-toggle-bar"></span>
+        <span class="nav-toggle-bar"></span>
+        <span class="nav-toggle-bar"></span>
+      </button>
 
-    <nav class="nav-links" id="nav-menu" aria-label="Page sections" data-nav-menu>
-      <a href="#how">How it works</a>
-      <a href="#features">What it handles</a>
-      <a href="#forms">Form types</a>
-      <a href="#faq">Questions</a>
-      <a href="#developer">Developer</a>
-      <a class="btn btn-small nav-cta" href="{{ url_for('auth.login') }}">Sign in</a>
-    </nav>
+      <nav class="nav-links" id="nav-menu" aria-label="Page sections" data-nav-menu>
+        <a href="#top">Home</a>
+        <a href="#how">How it works</a>
+        <a href="#features">Features</a>
+        <!-- SERVICES: add a <section id="services"> further down the page; this link will scroll to it. -->
+        <a href="#services">Services</a>
+        <a href="#forms">Form types</a>
+        <a href="#developer">About</a>
+        <a href="#faq">FAQ</a>
+        <a class="btn btn-primary btn-small nav-cta" href="{{ url_for('auth.login') }}">Sign in</a>
+      </nav>
+    </div>
   </div>
 </header>
 
 <main id="main">
 
-  <section class="hero">
+  <section class="hero" id="top">
     <div class="hero-aura hero-aura-1" aria-hidden="true"></div>
     <div class="hero-aura hero-aura-2" aria-hidden="true"></div>
 
     <div class="wrap hero-grid">
       <div class="hero-left">
-        <p class="eyebrow reveal">
-          <span class="pulse" aria-hidden="true"></span>
-          FormPilot AI
-        </p>
+        <p class="eyebrow reveal"><span class="pulse" aria-hidden="true"></span>AI Google Forms builder</p>
 
         <h1 class="hero-title reveal">
           Write your prompt.
@@ -64,31 +62,17 @@
         </h1>
 
         <p class="hero-sub reveal">
-          Write your prompt, drop your questions and options — it makes your
-          Google Form ready to go live, and gives you a link to share.
+          Drop your questions and options, review the preview, and get a
+          Google Form with a link you can share.
         </p>
 
         <div class="hero-cta reveal">
-          <a class="btn btn-primary" href="{{ url_for('auth.login') }}">
-            <span>Create your first form</span>
-            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
-              <path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-          </a>
-          <a class="btn btn-ghost" href="#how">See how it works</a>
+          <a class="btn btn-primary btn-large" href="{{ url_for('auth.login') }}"><span>Create your first form</span><svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+          <a class="btn btn-ghost btn-large" href="#how">See how it works</a>
         </div>
 
-        <p class="hero-fine reveal">
-          Google Forms are created in your own Google account. Forms that
-          need file uploads are hosted here, up to 10&nbsp;MB per file.
-        </p>
-
         <div class="hero-meta reveal">
-          <span class="hero-meta-item">
-            <span class="hero-meta-dot" aria-hidden="true"></span>
-            Nothing is created until you confirm
-          </span>
-          <span class="hero-meta-sep" aria-hidden="true"></span>
+          <span class="hero-meta-item"><span class="hero-meta-dot" aria-hidden="true"></span>Nothing is created until you confirm</span>
           <span class="hero-meta-item">Built by Bhavesh Kumar Jha</span>
         </div>
       </div>
@@ -103,11 +87,9 @@
               <stop offset="1" stop-color="rgba(79,70,229,0)"/>
             </linearGradient>
           </defs>
-          <path d="M0 40 C 40 40, 40 200, 80 200 C 40 200, 40 360, 0 360"
-                fill="none" stroke="url(#wire)" stroke-width="1.5"/>
+          <path d="M0 40 C 40 40, 40 200, 80 200 C 40 200, 40 360, 0 360" fill="none" stroke="url(#wire)" stroke-width="1.5"/>
           <circle class="wire-dot" r="3" fill="#4F46E5">
-            <animateMotion dur="6s" repeatCount="indefinite"
-              path="M0 40 C 40 40, 40 200, 80 200 C 40 200, 40 360, 0 360"/>
+            <animateMotion dur="6s" repeatCount="indefinite" path="M0 40 C 40 40, 40 200, 80 200 C 40 200, 40 360, 0 360"/>
           </circle>
         </svg>
       </div>
@@ -662,46 +644,47 @@
     </div>
   </section>
 
-  <section class="trust-bar">
-    <div class="wrap">
-      <p class="trust-bar-label reveal">Trusted by educators, event organizers, and teams</p>
-      <div class="trust-bar-logos reveal">
-        <span class="trust-logo">Google Forms</span>
-        <span class="trust-sep" aria-hidden="true"></span>
-        <span class="trust-logo">Gemini AI</span>
-        <span class="trust-sep" aria-hidden="true"></span>
-        <span class="trust-logo">OAuth 2.0</span>
-        <span class="trust-sep" aria-hidden="true"></span>
-        <span class="trust-logo">10 MB Uploads</span>
-      </div>
+  <div class="strip">
+    <div class="wrap strip-inner">
+      <span class="strip-label">Powered by</span>
+      <span class="strip-item"><i></i>Google Forms</span>
+      <span class="strip-item"><i></i>Gemini AI</span>
+      <span class="strip-item"><i></i>Google OAuth 2.0</span>
+      <span class="strip-item"><i></i>10&nbsp;MB uploads</span>
     </div>
-  </section>
+  </div>
 
   <section class="section" id="how">
     <div class="wrap">
       <header class="section-head reveal">
         <p class="eyebrow"><span class="dot"></span>How it works</p>
         <h2>Three steps. One link.</h2>
-        <p class="section-lede">You stay in control at every step. The preview is the product — you see exactly what will be published before anything is.</p>
+        <p class="section-lede">You stay in control. The preview shows exactly what will be published before anything is.</p>
       </header>
       <ol class="steps">
         <li class="step reveal">
-          <span class="step-num">01</span>
-          <div class="step-icon" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M4 6h16M4 12h10M4 18h14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></div>
+          <div class="step-top">
+            <div class="step-icon" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M4 6h16M4 12h10M4 18h14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></div>
+            <span class="step-num">01</span>
+          </div>
           <h3>Write your prompt</h3>
-          <p>Plain words, pasted questions, or a PDF, DOCX or TXT file up to 10&nbsp;MB. Drop your questions and options and they stay exactly as written.</p>
+          <p>Plain words, pasted questions, or a PDF, DOCX or TXT file. Your wording and options stay exactly as written.</p>
         </li>
         <li class="step reveal">
-          <span class="step-num">02</span>
-          <div class="step-icon" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><rect x="4" y="4" width="16" height="16" rx="2" stroke="currentColor" stroke-width="1.8"/><path d="M8 10l2 2 4-4M8 16h8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <div class="step-top">
+            <div class="step-icon" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><rect x="4" y="4" width="16" height="16" rx="2" stroke="currentColor" stroke-width="1.8"/><path d="M8 10l2 2 4-4M8 16h8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            <span class="step-num">02</span>
+          </div>
           <h3>Review the preview</h3>
-          <p>Edit any question, change its type, reorder, or mark correct answers for a quiz. Nothing exists yet — you can change your mind.</p>
+          <p>Edit, reorder, change types, or mark quiz answers. Nothing exists yet, so you can change your mind.</p>
         </li>
         <li class="step reveal">
-          <span class="step-num">03</span>
-          <div class="step-icon" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M5 12l4 4L19 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <div class="step-top">
+            <div class="step-icon" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M5 12l4 4L19 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            <span class="step-num">03</span>
+          </div>
           <h3>Go live</h3>
-          <p>Confirm, and your Google Form is ready. You get a link you can share immediately. Uploads use a hosted form instead.</p>
+          <p>Confirm and your Google Form is ready, with a link to share right away.</p>
         </li>
       </ol>
     </div>
@@ -710,34 +693,29 @@
   <section class="section tint" id="features">
     <div class="wrap">
       <header class="section-head reveal">
-        <p class="eyebrow"><span class="dot"></span>What it handles</p>
-        <h2>Real capability. Nothing decorative.</h2>
-        <p class="section-lede">Every feature exists to make form creation faster, clearer, and more reliable — without taking control away from you.</p>
+        <p class="eyebrow"><span class="dot"></span>Features</p>
+        <h2>Everything you need. Nothing extra.</h2>
       </header>
-      <div class="feature-list">
-        <article class="feature reveal">
-          <div class="feature-copy"><span class="feature-index">01</span><h3>Your questions, exactly as written</h3><p>Paste questions with options and the wording and order stay as typed. Nothing added, removed, or reordered unless you ask.</p></div>
-          <div class="feature-vignette"><div class="mini-chat"><span class="mini-bubble user">1. Which subject?</span><span class="mini-bubble user">A. Maths · B. Physics · C. Chemistry</span><span class="mini-bubble agent">4 questions found · order kept</span></div></div>
+      <div class="bento">
+        <article class="tile wide reveal">
+          <div><h3>Your questions, exactly as written</h3><p>Paste questions with options and the wording and order stay as typed.</p></div>
+          <div class="tile-art"><div class="mini-chat"><span class="mini-bubble user">1. Which subject? A. Maths · B. Physics</span><span class="mini-bubble agent">4 questions found · order kept</span></div></div>
         </article>
-        <article class="feature reveal">
-          <div class="feature-copy"><span class="feature-index">02</span><h3>Simple field lists</h3><p>Write “name, email, phone, roll no” and the fields appear immediately — no AI needed for this part.</p></div>
-          <div class="feature-vignette"><div class="mini-fields"><span class="mini-field">Name</span><span class="mini-field">Email</span><span class="mini-field">Phone</span><span class="mini-field">Roll No</span></div></div>
+        <article class="tile wide reveal">
+          <div><h3>Quizzes with answer keys</h3><p>Mark correct answers and set points. Hosted forms show respondents their score.</p></div>
+          <div class="tile-art"><div class="mini-quiz"><p class="mini-q">Which planet has the most moons?</p><span class="mini-opt">Saturn</span><span class="mini-opt correct">Jupiter <span class="key">answer key</span></span></div></div>
         </article>
-        <article class="feature reveal">
-          <div class="feature-copy"><span class="feature-index">03</span><h3>Seven question types</h3><p>Multiple choice, checkboxes, dropdown, true/false, short answer, paragraph, email. Each one marked required or optional.</p></div>
-          <div class="feature-vignette"><div class="mini-types"><span class="chip">Multiple choice</span><span class="chip">Checkboxes</span><span class="chip">Dropdown</span><span class="chip">True / False</span><span class="chip">Short answer</span><span class="chip">Paragraph</span><span class="chip">Email</span></div></div>
+        <article class="tile reveal">
+          <div><h3>Simple field lists</h3><p>Type “name, email, phone” and the fields appear.</p></div>
+          <div class="tile-art"><div class="mini-fields"><span class="mini-field">Name</span><span class="mini-field">Email</span><span class="mini-field">Phone</span><span class="mini-field">Roll No</span></div></div>
         </article>
-        <article class="feature reveal">
-          <div class="feature-copy"><span class="feature-index">04</span><h3>Quizzes with answer keys</h3><p>Mark correct answers and set points. Respondents on a hosted form see their score when they submit.</p></div>
-          <div class="feature-vignette"><div class="mini-quiz"><p class="mini-q">Which planet has the most moons?</p><span class="mini-opt">Saturn</span><span class="mini-opt correct">Jupiter <span class="key">answer key</span></span><span class="mini-opt">Mars</span></div></div>
+        <article class="tile reveal">
+          <div><h3>Seven question types</h3><p>Each one marked required or optional.</p></div>
+          <div class="tile-art"><div class="mini-types"><span class="chip">Multiple choice</span><span class="chip">Checkboxes</span><span class="chip">Dropdown</span><span class="chip">True / False</span><span class="chip">Short</span><span class="chip">Paragraph</span><span class="chip">Email</span></div></div>
         </article>
-        <article class="feature reveal">
-          <div class="feature-copy"><span class="feature-index">05</span><h3>Questions from a document</h3><p>Upload a PDF, DOCX or TXT with questions and review what was found. Scanned images aren't supported yet.</p></div>
-          <div class="feature-vignette"><div class="mini-doc"><span class="doc-name"><svg width="12" height="14" viewBox="0 0 12 14" fill="none" aria-hidden="true"><path d="M1 1.5h6.5L11 5v8.5H1V1.5z" stroke="currentColor" stroke-width="1.2"/><path d="M7.5 1.5V5H11" stroke="currentColor" stroke-width="1.2"/></svg>workshop-questions.pdf</span><span class="doc-bar"></span><span class="doc-bar short"></span><span class="doc-note">12 questions detected</span></div></div>
-        </article>
-        <article class="feature reveal">
-          <div class="feature-copy"><span class="feature-index">06</span><h3>Responses in one place</h3><p>Hosted forms collect answers and uploaded files, up to 10&nbsp;MB each. View them in your dashboard or download a CSV.</p></div>
-          <div class="feature-vignette"><div class="mini-responses"><span class="resp-head"></span><span class="resp-row"></span><span class="resp-row"></span><span class="resp-row"></span><span class="resp-cta">↓ Download CSV</span></div></div>
+        <article class="tile reveal">
+          <div><h3>Questions from a file</h3><p>Upload a PDF, DOCX or TXT and review what was found.</p></div>
+          <div class="tile-art"><div class="mini-doc"><span class="doc-name"><svg width="12" height="14" viewBox="0 0 12 14" fill="none" aria-hidden="true"><path d="M1 1.5h6.5L11 5v8.5H1V1.5z" stroke="currentColor" stroke-width="1.2"/><path d="M7.5 1.5V5H11" stroke="currentColor" stroke-width="1.2"/></svg>workshop-questions.pdf</span><span class="doc-bar"></span><span class="doc-bar short"></span><span class="doc-note">12 questions detected</span></div></div>
         </article>
       </div>
     </div>
@@ -747,15 +725,14 @@
     <div class="wrap">
       <header class="section-head reveal">
         <p class="eyebrow"><span class="dot"></span>Two kinds of form</p>
-        <h2>Google Form or hosted form. The preview tells you which.</h2>
-        <p class="section-lede">Google doesn't let other apps create file-upload questions in a Google Form. So when your form needs uploads, it's created as a hosted form instead — and the preview says so before you confirm.</p>
+        <h2>Google Form or hosted form.</h2>
+        <p class="section-lede">Google doesn’t let other apps create file-upload questions, so forms that need uploads are hosted here. The preview tells you which before you confirm.</p>
       </header>
       <div class="compare reveal">
         <div class="compare-col">
           <div class="compare-head"><h3 class="compare-title">Google Form</h3><p class="compare-sub">Created in your Google account</p></div>
           <ul class="compare-list">
-            <li><span class="k">Lives</span><span class="v">Your Google account</span></li>
-            <li><span class="k">Share link</span><span class="v">Google's form link</span></li>
+            <li><span class="k">Share link</span><span class="v">Google’s form link</span></li>
             <li><span class="k">File uploads</span><span class="v no">No</span></li>
             <li><span class="k">Edit after publish</span><span class="v yes">Yes, in Google Forms</span></li>
             <li><span class="k">Responses</span><span class="v">Google Forms</span></li>
@@ -764,45 +741,30 @@
         <div class="compare-col featured">
           <div class="compare-head"><span class="compare-badge">For uploads</span><h3 class="compare-title">Hosted form</h3><p class="compare-sub">Hosted here, with uploads</p></div>
           <ul class="compare-list">
-            <li><span class="k">Lives</span><span class="v">On this website</span></li>
             <li><span class="k">Share link</span><span class="v">A link on this site</span></li>
-            <li><span class="k">File uploads</span><span class="v yes">Yes, up to 10&nbsp;MB per file</span></li>
-            <li><span class="k">Edit after publish</span><span class="v no">Not yet — delete &amp; recreate</span></li>
-            <li><span class="k">Responses</span><span class="v">Your dashboard + CSV</span></li>
+            <li><span class="k">File uploads</span><span class="v yes">Yes, up to 10&nbsp;MB</span></li>
+            <li><span class="k">Edit after publish</span><span class="v no">Not yet</span></li>
+            <li><span class="k">Responses</span><span class="v">Dashboard + CSV</span></li>
           </ul>
         </div>
       </div>
     </div>
   </section>
 
-  <section class="section uses-section">
+  <section class="section tint" id="developer">
     <div class="wrap">
-      <header class="section-head reveal"><p class="eyebrow"><span class="dot"></span>Made for</p><h2>Forms people actually send.</h2></header>
-      <ul class="uses reveal">
-        <li><strong>Registrations</strong><span>for events, workshops, courses</span></li>
-        <li><strong>Quizzes</strong><span>and practice tests for a class</span></li>
-        <li><strong>Feedback</strong><span>and short surveys</span></li>
-        <li><strong>Submissions</strong><span>of CVs, assignments, practicals</span></li>
-        <li><strong>Student details</strong><span>collected once, in one place</span></li>
-        <li><strong>Sign-ups</strong><span>for clubs, teams and trips</span></li>
-      </ul>
-    </div>
-  </section>
-
-  <section class="section dark" id="developer">
-    <div class="wrap dev">
-      <div class="dev-note reveal">
-        <p class="eyebrow light"><span class="dot"></span>The person behind it</p>
+      <header class="section-head reveal">
+        <p class="eyebrow"><span class="dot"></span>About</p>
         <h2>Built from a problem worth solving.</h2>
-        <p>Every class, workshop, and event comes with its own small administrative tasks. Forms are necessary — but creating them shouldn't become the work itself.</p>
-        <p>FormPilot AI began with a simple idea: make that process easier without taking control away from the person creating the form.</p>
-        <p class="dev-belief">Technology should make everyday work feel lighter.</p>
-      </div>
+      </header>
       <aside class="dev-card reveal">
         <span class="dev-avatar" aria-hidden="true">BJ</span>
-        <p class="dev-name">Bhavesh Kumar Jha</p>
-        <p class="dev-role">AI/ML engineer, researcher and teacher</p>
-        <p class="dev-place">Mumbai, India</p>
+        <div class="dev-body">
+          <p class="dev-kicker">The person behind it</p>
+          <p class="dev-name">Bhavesh Kumar Jha</p>
+          <p class="dev-role">AI/ML engineer, researcher and teacher · Mumbai, India</p>
+          <p class="dev-belief">Forms are necessary, but creating them shouldn’t become the work itself. Technology should make everyday work feel lighter.</p>
+        </div>
         <ul class="dev-links">
           <li><a href="https://github.com/Bhaveshkumarjha" rel="noopener" target="_blank">GitHub<svg width="11" height="11" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M3 9l6-6M5 3h4v4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a></li>
           <li><a href="https://www.linkedin.com/in/bhavesh-jha-51ab48246/" rel="noopener" target="_blank">LinkedIn<svg width="11" height="11" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M3 9l6-6M5 3h4v4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a></li>
@@ -811,43 +773,27 @@
     </div>
   </section>
 
-  <section class="section" id="trust">
-    <div class="wrap trust">
-      <header class="section-head reveal"><p class="eyebrow"><span class="dot"></span>Account &amp; data</p><h2>What happens to your account and your data.</h2></header>
-      <ul class="ticks reveal">
-        <li>You sign in with Google. We ask for your basic profile and permission to create the Google Forms we build for you.</li>
-        <li>Google access tokens are stored encrypted.</li>
-        <li>You only ever see your own forms and responses.</li>
-        <li>Uploaded files are checked by their real file type and stored privately. Only the form's owner can download them.</li>
-        <li>Questions you paste or upload in a clear format (“Question 1”, “A.”, “B.”) are read on our server without AI.</li>
-        <li>For other requests the chat uses Google's free Gemini API, and Google may use free-tier content to improve its products. Do not paste confidential data.</li>
-      </ul>
-    </div>
-  </section>
-
-  <section class="section tint" id="faq">
-    <div class="wrap faq">
-      <header class="section-head reveal"><p class="eyebrow"><span class="dot"></span>Questions</p><h2>Answers, plainly.</h2></header>
+  <section class="section" id="faq">
+    <div class="wrap">
+      <header class="section-head reveal"><p class="eyebrow"><span class="dot"></span>FAQ</p><h2>Answers, plainly.</h2></header>
       <div class="faq-list reveal">
-        <details><summary>Do I need a Google account?</summary><p>Yes. You sign in with Google, and Google Forms are created in your account.</p></details>
-        <details><summary>Does it create real Google Forms?</summary><p>Yes. They appear in your Google Forms like any form you made by hand, and you can edit them there. We never show a link that Google did not give us.</p></details>
-        <details><summary>Can people upload files to my form?</summary><p>On a hosted form, yes, up to 10&nbsp;MB per file. Google Forms cannot be created with file-upload questions by other apps, so those forms are hosted here.</p></details>
+        <details><summary>Does it create real Google Forms?</summary><p>Yes. They appear in your Google Forms like any form you made by hand, and you can edit them there. You need a Google account to sign in.</p></details>
+        <details><summary>Can people upload files to my form?</summary><p>On a hosted form, yes, up to 10&nbsp;MB per file. Google Forms can’t be created with file-upload questions by other apps, so those forms are hosted here.</p></details>
         <details><summary>Is it free?</summary><p>You can start without paying. The AI chat runs on a free quota with daily limits, so heavy use can be slowed or paused.</p></details>
-        <details><summary>What if the AI is unavailable?</summary><p>Simple field lists and pasted questions with options still work. For other requests you will see a message to try again later.</p></details>
-        <details><summary>Can I change a form after it is live?</summary><p>Google Forms, yes: open them in Google Forms. Hosted forms cannot be edited after publishing yet, so delete the form and create a new one.</p></details>
+        <details><summary>What happens to my data?</summary><p>Google tokens are stored encrypted, you only see your own forms, and uploaded files are stored privately. Questions in a clear format are read without AI; other requests use Google’s free Gemini API, so don’t paste confidential data. See the <a href="{{ url_for('privacy_policy') }}">Privacy Policy</a>.</p></details>
+        <details><summary>Can I change a form after it is live?</summary><p>Google Forms, yes: open them in Google Forms. Hosted forms can’t be edited after publishing yet, so delete and create a new one.</p></details>
       </div>
     </div>
   </section>
 
   <section class="cta-band">
-    <div class="wrap cta-inner reveal">
-      <h2>Write your prompt.<br>Your Google Form is ready to go live.</h2>
-      <p class="cta-sub">Join the people who'd rather focus on the work than the paperwork.</p>
-      <a class="btn btn-primary btn-large" href="{{ url_for('auth.login') }}">
-        <span>Create your first form</span>
-        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      </a>
-      <p class="cta-note">Sign in with Google. Nothing is created until you confirm.</p>
+    <div class="wrap">
+      <div class="cta-inner reveal">
+        <h2>Write your prompt.<br>Your Google Form is ready.</h2>
+        <p class="cta-sub">Spend your time on the work, not the paperwork.</p>
+        <a class="btn btn-light btn-large" href="{{ url_for('auth.login') }}"><span>Create your first form</span><svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+        <p class="cta-note">Sign in with Google. Nothing is created until you confirm.</p>
+      </div>
     </div>
   </section>
 
@@ -856,30 +802,24 @@
 <footer class="footer">
   <div class="wrap">
     <div class="footer-top">
-      <div class="footer-brand-block">
-        <a class="footer-brand" href="{{ url_for('main.landing') }}">
-          <svg class="mark" viewBox="0 0 32 32" width="30" height="30" aria-hidden="true"><rect width="32" height="32" rx="8" fill="currentColor"/><rect x="7" y="7" width="18" height="18" rx="3" fill="none" stroke="#FAF9F6" stroke-width="2.4"/><path d="M11.5 16.5l3.2 3.2 6-7" fill="none" stroke="#FAF9F6" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          <span>FormPilot AI</span>
-        </a>
-        <p class="footer-tagline">Write your prompt. Your Google Form is ready to go live — with a link you can share. Built for people who'd rather focus on the work than the paperwork.</p>
-        <a class="footer-cta" href="{{ url_for('auth.login') }}">Start now — it's free<svg width="12" height="12" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+      <div>
+        <a class="footer-brand" href="#main"><svg class="mark" viewBox="0 0 32 32" width="30" height="30" aria-hidden="true"><rect width="32" height="32" rx="8" fill="currentColor"/><rect x="7" y="7" width="18" height="18" rx="3" fill="none" stroke="#FAF9F6" stroke-width="2.4"/><path d="M11.5 16.5l3.2 3.2 6-7" fill="none" stroke="#FAF9F6" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg><span>FormPilot AI</span></a>
+        <p class="footer-tagline">Write your prompt. Your Google Form is ready to go live, with a link you can share.</p>
+        <a class="footer-cta" href="{{ url_for('auth.login') }}">Start now, it’s free<svg width="12" height="12" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
       </div>
       <div class="footer-cols">
-        <div class="footer-col"><h3>Product</h3><ul><li><a href="#how">How it works</a></li><li><a href="#features">What it handles</a></li><li><a href="#forms">Form types</a></li><li><a href="#faq">Questions</a></li></ul></div>
-        <div class="footer-col"><h3>Trust</h3><ul><li><a href="#trust">Account &amp; data</a></li><li><a href="#trust">Uploads &amp; limits</a></li><li><a href="#trust">Google &amp; free tier</a></li><li><a href="#developer">About the build</a></li><li><a href="{{ url_for('privacy_policy') }}">Privacy Policy</a></li><li><a href="{{ url_for('terms') }}">Terms of Service</a></li></ul></div>
-        <div class="footer-col"><h3>Connect</h3><ul><li><a href="https://github.com/Bhaveshkumarjha" rel="noopener" target="_blank">GitHub<svg width="10" height="10" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M3 9l6-6M5 3h4v4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a></li><li><a href="https://www.linkedin.com/in/bhavesh-jha-51ab48246/" rel="noopener" target="_blank">LinkedIn<svg width="10" height="10" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M3 9l6-6M5 3h4v4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a></li><li><a href="{{ url_for('auth.login') }}">Sign in with Google</a></li></ul></div>
+        <div class="footer-col"><h3>Product</h3><ul><li><a href="#how">How it works</a></li><li><a href="#features">Features</a></li><li><a href="#forms">Form types</a></li><li><a href="#faq">FAQ</a></li></ul></div>
+        <div class="footer-col"><h3>Legal</h3><ul><li><a href="{{ url_for('privacy_policy') }}">Privacy Policy</a></li><li><a href="{{ url_for('terms') }}">Terms of Service</a></li><li><a href="#developer">About the build</a></li></ul></div>
+        <div class="footer-col"><h3>Connect</h3><ul><li><a href="https://github.com/Bhaveshkumarjha" rel="noopener" target="_blank">GitHub<svg width="11" height="11" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M3 9l6-6M5 3h4v4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a></li><li><a href="https://www.linkedin.com/in/bhavesh-jha-51ab48246/" rel="noopener" target="_blank">LinkedIn<svg width="11" height="11" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M3 9l6-6M5 3h4v4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a></li><li><a href="{{ url_for('auth.login') }}">Sign in with Google</a></li></ul></div>
       </div>
     </div>
-    <div class="footer-mid">
-      <div class="footer-by">
-        <span class="by-avatar" aria-hidden="true">BJ</span>
-        <div><p class="by-name">Designed & Developed by Bhavesh Kumar Jha</p></div>
-      </div>
-      <a class="footer-top-link" href="#main" data-back-to-top>Back to top<svg width="11" height="11" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M7 12V2M3 6l4-4 4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
-    </div>
+
+    <div class="footer-word" aria-hidden="true">FormPilot</div>
+
     <div class="footer-bottom">
+      <span class="footer-by"><span class="by-avatar" aria-hidden="true">BJ</span>Designed &amp; developed by Bhavesh Kumar Jha · 2026</span>
       <p class="footer-legal">Google and Google Forms are trademarks of Google LLC. This site is not affiliated with or endorsed by Google.</p>
-      <p class="footer-mark"><span class="mark-dot" aria-hidden="true"></span>Built with care · 2026</p>
+      <a class="footer-top-link" href="#main" data-back-to-top>Back to top<svg width="11" height="11" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M7 12V2M3 6l4-4 4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
     </div>
   </div>
 </footer>
