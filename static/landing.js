@@ -60,6 +60,42 @@
     }
   }
 
+  /* Active nav link (scroll-spy) */
+  if (navMenu && "IntersectionObserver" in window) {
+    var spyLinks = Array.prototype.slice.call(navMenu.querySelectorAll('a[href^="#"]'));
+    var spyMap = {};
+    spyLinks.forEach(function (a) {
+      var hrefv = a.getAttribute("href"); if (hrefv.length < 2) return;
+      var t = document.querySelector(hrefv);
+      if (t) spyMap[t.id] = a;
+    });
+    var spyObs = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (!e.isIntersecting) return;
+        spyLinks.forEach(function (a) { a.classList.remove("is-active"); });
+        var link = spyMap[e.target.id];
+        if (link) link.classList.add("is-active");
+      });
+    }, { rootMargin: "-45% 0px -50% 0px", threshold: 0 });
+    Object.keys(spyMap).forEach(function (id) { spyObs.observe(document.getElementById(id)); });
+  }
+
+  /* Fit the walkthrough panel to the screen height (desktop) */
+  var fitStage = document.querySelector("[data-cb-stage]");
+  if (fitStage) {
+    var DESIGN_H = 640;
+    var fitScenes = function () {
+      var s = 1;
+      if (window.innerWidth > 1100) {
+        s = Math.min(1, Math.max(0.7, fitStage.clientHeight / DESIGN_H));
+      }
+      fitStage.style.setProperty("--s", s.toFixed(3));
+    };
+    fitScenes();
+    window.addEventListener("resize", fitScenes);
+    if ("ResizeObserver" in window) new ResizeObserver(fitScenes).observe(fitStage);
+  }
+
   /* ═══════════════════════════════════════════════════════════
      ANIMATION
      ═══════════════════════════════════════════════════════════ */
