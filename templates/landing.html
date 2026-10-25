@@ -748,6 +748,18 @@
           </ul>
         </div>
       </div>
+
+      <!-- ══ AD SLOT 1 (after form types) ══
+           Delete the .ad-placeholder div and paste your banner / ad code inside .ad-box.
+           Banner image example:
+           <a href="https://your-product.com" rel="sponsored noopener" target="_blank"><img src="..." alt="Your product" width="970" height="90"></a>
+           (If you use an ad network, also allow its domains in the Content-Security-Policy in app.py.) -->
+      <div class="ad-slot reveal" data-ad-slot="banner-1">
+        <p class="ad-label">Advertisement</p>
+        <div class="ad-box ad-banner">
+          <div class="ad-placeholder"><span class="ad-size">970 × 90</span><span>Your ad goes here</span></div>
+        </div>
+      </div>
     </div>
   </section>
 
@@ -773,7 +785,41 @@
     </div>
   </section>
 
-  <section class="section" id="faq">
+  <!-- ══ MORE PRODUCTS ══ Promote your other products here. Edit title, text and link; duplicate or remove cards freely. -->
+  <section class="section" id="products">
+    <div class="wrap">
+      <header class="section-head reveal">
+        <p class="eyebrow"><span class="dot"></span>More from the maker</p>
+        <h2>Other products you might like.</h2>
+        <p class="section-lede">Tools built with the same care as FormPilot AI.</p>
+      </header>
+      <div class="promo-grid">
+        <a class="promo-card reveal" href="#products">
+          <div class="promo-art promo-art-1" aria-hidden="true"><svg width="30" height="30" viewBox="0 0 24 24" fill="none"><path d="M12 3l2.5 5.5L20 9l-4 4 1 6-5-3-5 3 1-6-4-4 5.5-.5L12 3z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg></div>
+          <span class="promo-tag">Your product</span>
+          <h3>Product name one</h3>
+          <p>A short line about what this product does and who it is for.</p>
+          <span class="promo-link">Learn more <svg width="12" height="12" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+        </a>
+        <a class="promo-card reveal" href="#products">
+          <div class="promo-art promo-art-2" aria-hidden="true"><svg width="30" height="30" viewBox="0 0 24 24" fill="none"><rect x="4" y="5" width="16" height="14" rx="3" stroke="currentColor" stroke-width="1.6"/><path d="M8 10h8M8 14h5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></div>
+          <span class="promo-tag">Your product</span>
+          <h3>Product name two</h3>
+          <p>A short line about what this product does and who it is for.</p>
+          <span class="promo-link">Learn more <svg width="12" height="12" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+        </a>
+        <a class="promo-card reveal" href="#products">
+          <div class="promo-art promo-art-3" aria-hidden="true"><svg width="30" height="30" viewBox="0 0 24 24" fill="none"><path d="M5 19V9m7 10V5m7 14v-7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></div>
+          <span class="promo-tag">Coming soon</span>
+          <h3>Product name three</h3>
+          <p>A short line about what this product does and who it is for.</p>
+          <span class="promo-link">Learn more <svg width="12" height="12" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section tint" id="faq">
     <div class="wrap">
       <header class="section-head reveal"><p class="eyebrow"><span class="dot"></span>FAQ</p><h2>Answers, plainly.</h2></header>
       <div class="faq-list reveal">
@@ -782,6 +828,20 @@
         <details><summary>Is it free?</summary><p>You can start without paying. The AI chat runs on a free quota with daily limits, so heavy use can be slowed or paused.</p></details>
         <details><summary>What happens to my data?</summary><p>Google tokens are stored encrypted, you only see your own forms, and uploaded files are stored privately. Questions in a clear format are read without AI; other requests use Google’s free Gemini API, so don’t paste confidential data. See the <a href="{{ url_for('privacy_policy') }}">Privacy Policy</a>.</p></details>
         <details><summary>Can I change a form after it is live?</summary><p>Google Forms, yes: open them in Google Forms. Hosted forms can’t be edited after publishing yet, so delete and create a new one.</p></details>
+      </div>
+
+      <!-- ══ AD SLOT 2 (after FAQ) ══
+           Delete the .ad-placeholder div and paste your banner / ad code inside .ad-box.
+           Banner image example:
+           <a href="https://your-product.com" rel="sponsored noopener" target="_blank"><img src="..." alt="Your product" width="970" height="90"></a>
+           (If you use an ad network, also allow its domains in the Content-Security-Policy in app.py.) -->
+      <div class="ad-slot reveal" data-ad-slot="banner-2">
+        <p class="ad-label">Advertisement</p>
+        <div class="ad-box ad-banner">
+          <a href="https://bhavdocs-2.onrender.com/" rel="sponsored noopener" target="_blank">
+  <img src="{{ url_for('static', filename='ads/image.png') }}" alt="BhavDocs" width="970" height="50">
+</a>
+        </div>
       </div>
     </div>
   </section>
@@ -808,7 +868,7 @@
         <a class="footer-cta" href="{{ url_for('auth.login') }}">Start now, it’s free<svg width="12" height="12" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
       </div>
       <div class="footer-cols">
-        <div class="footer-col"><h3>Product</h3><ul><li><a href="#how">How it works</a></li><li><a href="#features">Features</a></li><li><a href="#forms">Form types</a></li><li><a href="#faq">FAQ</a></li></ul></div>
+        <div class="footer-col"><h3>Product</h3><ul><li><a href="#how">How it works</a></li><li><a href="#features">Features</a></li><li><a href="#forms">Form types</a></li><li><a href="#products">More products</a></li><li><a href="#faq">FAQ</a></li></ul></div>
         <div class="footer-col"><h3>Legal</h3><ul><li><a href="{{ url_for('privacy_policy') }}">Privacy Policy</a></li><li><a href="{{ url_for('terms') }}">Terms of Service</a></li><li><a href="#developer">About the build</a></li></ul></div>
         <div class="footer-col"><h3>Connect</h3><ul><li><a href="https://github.com/Bhaveshkumarjha" rel="noopener" target="_blank">GitHub<svg width="11" height="11" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M3 9l6-6M5 3h4v4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a></li><li><a href="https://www.linkedin.com/in/bhavesh-jha-51ab48246/" rel="noopener" target="_blank">LinkedIn<svg width="11" height="11" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M3 9l6-6M5 3h4v4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a></li><li><a href="{{ url_for('auth.login') }}">Sign in with Google</a></li></ul></div>
       </div>
