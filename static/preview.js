@@ -1,569 +1,245 @@
-/* ═══════════════════════════════════════════════════════════════
-   FormPilot AI — landing interactions
-   8-scene walkthrough:
-     mini landing → sign in → Google picker → dashboard →
-     chat → preview → confirm → creating → Google Form → success → loop
-   ═══════════════════════════════════════════════════════════════ */
-
+// Form preview + editor. All user text is placed with textContent/value, never innerHTML.
 (function () {
-  "use strict";
+  var root = document.getElementById('editor');
+  if (!root) return;
+  var spec = JSON.parse(document.getElementById('spec-data').textContent);
+  var errBox = document.getElementById('errors');
+  var csrf = document.querySelector('meta[name=csrf-token]').content;
+  var createForm = document.getElementById('create-form');
+  var uploadNote = document.getElementById('upload-note');
+  var destGoogle = document.getElementById('dest-google');
+  var destCustom = document.getElementById('dest-custom');
+  var confirmBtn = document.getElementById('confirm-btn');
 
-  var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var TYPES = [
+    ['multiple_choice', 'Multiple choice'], ['checkbox', 'Checkboxes'], ['dropdown', 'Dropdown'],
+    ['true_false', 'True / False'], ['short_answer', 'Short answer'], ['paragraph', 'Paragraph'],
+    ['email', 'Email'], ['file_upload', 'File upload (custom form only)']
+  ];
+  var LABELS = {};
+  TYPES.forEach(function (t) { LABELS[t[0]] = t[1]; });
+  var CHOICE = { multiple_choice: 1, checkbox: 1, dropdown: 1, true_false: 1 };
+  var saveTimer = null;
 
-  /* Sticky nav */
-  var nav = document.querySelector("[data-nav]");
-  if (nav) {
-    var onScroll = function () {
-      nav.setAttribute("data-scrolled", window.scrollY > 8 ? "true" : "false");
-    };
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
+  function el(tag, props, kids) {
+    var node = document.createElement(tag);
+    Object.keys(props || {}).forEach(function (k) {
+      if (k === 'class') node.className = props[k];
+      else if (k === 'text') node.textContent = props[k];
+      else if (k === 'value') node.value = props[k];
+      else if (k.slice(0, 2) === 'on') node.addEventListener(k.slice(2), props[k]);
+      else if (props[k] === true) node.setAttribute(k, '');
+      else if (props[k] !== false && props[k] != null) node.setAttribute(k, props[k]);
+    });
+    (kids || []).forEach(function (c) { node.appendChild(c); });
+    return node;
   }
 
-  /* Mobile nav */
-  var navToggle = document.querySelector("[data-nav-toggle]");
-  var navMenu = document.querySelector("[data-nav-menu]");
-  if (navToggle && navMenu) {
-    navToggle.addEventListener("click", function () {
-      var open = navToggle.getAttribute("aria-expanded") === "true";
-      navToggle.setAttribute("aria-expanded", String(!open));
-      navMenu.setAttribute("data-open", String(!open));
-      if (nav) nav.setAttribute("data-open", String(!open));
-    });
-    navMenu.querySelectorAll("a").forEach(function (a) {
-      a.addEventListener("click", function () {
-        navToggle.setAttribute("aria-expanded", "false");
-        navMenu.setAttribute("data-open", "false");
-        if (nav) nav.removeAttribute("data-open");
+  function hasUpload() {
+    return spec.questions.some(function (q) { return q.type === 'file_upload'; });
+  }
+
+  function syncDestination() {
+    var upload = hasUpload();
+    uploadNote.classList.toggle('d-none', !upload);
+    destGoogle.disabled = upload;
+    if (upload) destCustom.checked = true;
+  }
+
+  function showErrors(list) {
+    errBox.textContent = '';
+    if (!list || !list.length) { errBox.classList.add('d-none'); return; }
+    var ul = el('ul', { class: 'mb-0' });
+    list.forEach(function (e) { ul.appendChild(el('li', { text: e })); });
+    errBox.appendChild(ul);
+    errBox.classList.remove('d-none');
+  }
+
+  function save() {
+    return fetch(root.dataset.saveUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'X-CSRFToken': csrf, 'X-Requested-With': 'fetch' },
+      body: JSON.stringify(spec)
+    }).then(function (r) { return r.json().then(function (d) { return { ok: r.ok, data: d }; }); })
+      .then(function (res) {
+        if (!res.ok) { showErrors([res.data.error || 'Could not save your changes.']); return false; }
+        spec = res.data.spec;
+        showErrors(res.data.errors);
+        return res.data.errors.length === 0;
+      }).catch(function () { showErrors(['Network problem while saving.']); return false; });
+  }
+
+  function autosave() {
+    clearTimeout(saveTimer);
+    saveTimer = setTimeout(save, 900);
+  }
+
+  function move(i, d) {
+    var j = i + d;
+    if (j < 0 || j >= spec.questions.length) return;
+    var t = spec.questions[i]; spec.questions[i] = spec.questions[j]; spec.questions[j] = t;
+    render(); autosave();
+  }
+
+  function setType(q, type) {
+    q.type = type;
+    if (type === 'true_false') { q.options = ['True', 'False']; }
+    else if (CHOICE[type]) { if (q.options.length < 2) q.options = ['Option 1', 'Option 2']; }
+    else { q.options = []; }
+    q.correct = (q.correct || []).filter(function (c) { return q.options.indexOf(c) >= 0; });
+    if (type !== 'checkbox' && q.correct.length > 1) q.correct = q.correct.slice(0, 1);
+  }
+
+  function optionRows(q) {
+    var box = el('div');
+    q.options.forEach(function (opt, oi) {
+      var multi = q.type === 'checkbox';
+      var mark = el('input', {
+        type: multi ? 'checkbox' : 'radio', name: 'correct-' + q._id, class: 'form-check-input',
+        title: 'Correct answer', 'aria-label': 'Mark as correct',
+        onchange: function (ev) {
+          var v = q.options[oi];
+          if (multi) {
+            var at = q.correct.indexOf(v);
+            if (ev.target.checked && at < 0) q.correct.push(v);
+            if (!ev.target.checked && at >= 0) q.correct.splice(at, 1);
+          } else { q.correct = [v]; }
+          autosave();
+        }
       });
-    });
-  }
-
-  /* Reveal on scroll */
-  var reveals = Array.prototype.slice.call(document.querySelectorAll(".reveal"));
-  if (reveals.length) {
-    if (reduceMotion || !("IntersectionObserver" in window)) {
-      reveals.forEach(function (el) { el.classList.add("is-in"); });
-    } else {
-      var revealObs = new IntersectionObserver(function (entries) {
-        var visible = entries
-          .filter(function (e) { return e.isIntersecting; })
-          .map(function (e) { return e.target; });
-        visible.forEach(function (el, i) {
-          setTimeout(function () {
-            el.classList.add("is-in");
-            revealObs.unobserve(el);
-          }, i * 70);
-        });
-      }, { rootMargin: "0px 0px -10% 0px", threshold: 0.1 });
-      reveals.forEach(function (el) { revealObs.observe(el); });
-    }
-  }
-
-  /* Active nav link (scroll-spy) */
-  if (navMenu && "IntersectionObserver" in window) {
-    var spyLinks = Array.prototype.slice.call(navMenu.querySelectorAll('a[href^="#"]'));
-    var spyMap = {};
-    spyLinks.forEach(function (a) {
-      var hrefv = a.getAttribute("href"); if (hrefv.length < 2) return;
-      var t = document.querySelector(hrefv);
-      if (t) spyMap[t.id] = a;
-    });
-    var spyObs = new IntersectionObserver(function (entries) {
-      entries.forEach(function (e) {
-        if (!e.isIntersecting) return;
-        spyLinks.forEach(function (a) { a.classList.remove("is-active"); });
-        var link = spyMap[e.target.id];
-        if (link) link.classList.add("is-active");
+      mark.checked = q.correct.indexOf(opt) >= 0;
+      if (!spec.is_quiz) mark.classList.add('d-none');
+      var input = el('input', {
+        type: 'text', class: 'form-control form-control-sm', value: opt, maxlength: 300,
+        'aria-label': 'Option ' + (oi + 1),
+        readonly: q.type === 'true_false',
+        oninput: function (ev) {
+          var old = q.options[oi], now = ev.target.value;
+          var at = q.correct.indexOf(old);
+          if (at >= 0) q.correct[at] = now;
+          q.options[oi] = now;
+          autosave();
+        }
       });
-    }, { rootMargin: "-45% 0px -50% 0px", threshold: 0 });
-    Object.keys(spyMap).forEach(function (id) { spyObs.observe(document.getElementById(id)); });
-  }
-
-  /* Fit the walkthrough panel to the screen height (desktop) */
-  var fitStage = document.querySelector("[data-cb-stage]");
-  if (fitStage) {
-    var DESIGN_H = 640;
-    var fitScenes = function () {
-      var s = 1;
-      if (window.innerWidth > 1100) {
-        s = Math.min(1, Math.max(0.7, fitStage.clientHeight / DESIGN_H));
-      }
-      fitStage.style.setProperty("--s", s.toFixed(3));
-    };
-    fitScenes();
-    window.addEventListener("resize", fitScenes);
-    if ("ResizeObserver" in window) new ResizeObserver(fitScenes).observe(fitStage);
-  }
-
-  /* ═══════════════════════════════════════════════════════════
-     ANIMATION
-     ═══════════════════════════════════════════════════════════ */
-  var chatbot = document.querySelector("[data-chatbot]");
-  if (!chatbot) return;
-
-  var cursorEl     = chatbot.querySelector("[data-cb-cursor]");
-  var stageEl      = chatbot.querySelector("[data-cb-stage]");
-  var statusEl     = chatbot.querySelector("[data-cb-status]");
-  var statusTextEl = chatbot.querySelector("[data-cb-status-text]");
-  var replayBtn    = chatbot.querySelector("[data-cb-replay]");
-  var progressSegs = Array.prototype.slice.call(chatbot.querySelectorAll("[data-cb-seg]"));
-
-  var sceneLanding  = chatbot.querySelector('[data-scene-name="landing"]');
-  var scenePicker   = chatbot.querySelector('[data-scene-name="picker"]');
-  var sceneDash     = chatbot.querySelector('[data-scene-name="dashboard"]');
-  var sceneChat     = chatbot.querySelector('[data-scene-name="chat"]');
-  var scenePreview  = chatbot.querySelector('[data-scene-name="preview"]');
-  var sceneCreating = chatbot.querySelector('[data-scene-name="creating"]');
-  var sceneGform    = chatbot.querySelector('[data-scene-name="gform"]');
-  var sceneSuccess  = chatbot.querySelector('[data-scene-name="success"]');
-
-  var miniSigninEls  = Array.prototype.slice.call(chatbot.querySelectorAll("[data-mini-signin]"));
-  var primaryAccount = chatbot.querySelector("[data-account-primary]");
-  var userMsgEl      = chatbot.querySelector('[data-scene="user-msg"]');
-  var userTextEl     = chatbot.querySelector("[data-type-text]");
-  var userText       = userTextEl ? userTextEl.getAttribute("data-text") || "" : "";
-  var aiThinkingEl   = chatbot.querySelector('[data-scene="ai-thinking"]');
-  var aiReplyEl      = chatbot.querySelector('[data-scene="ai-reply"]');
-  var loadingLabel   = chatbot.querySelector("[data-cb-loading-label]");
-  var formEyebrow    = chatbot.querySelector('[data-scene="form-eyebrow"]');
-  var formTitle      = chatbot.querySelector('[data-scene="form-title"]');
-  var formSub        = chatbot.querySelector('[data-scene="form-sub"]');
-  var formFields     = Array.prototype.slice.call(chatbot.querySelectorAll(".cb-field"));
-  var formActions    = chatbot.querySelector('[data-scene="form-actions"]');
-  var formNote       = chatbot.querySelector('[data-scene="form-note"]');
-  var confirmBtn     = chatbot.querySelector("[data-cb-confirm]");
-  var confirmLabel   = chatbot.querySelector("[data-cb-confirm-label]");
-  var gformBadge     = chatbot.querySelector("[data-cb-gform-badge]");
-  var successIcon    = chatbot.querySelector(".cb-success-icon");
-  var successTitle   = chatbot.querySelector(".cb-success-title");
-  var successSub     = chatbot.querySelector(".cb-success-sub");
-  var linkField      = chatbot.querySelector('[data-scene="link"]');
-  var linkTextEl     = chatbot.querySelector("[data-link-text]");
-  var linkText       = linkTextEl ? linkTextEl.getAttribute("data-text") || "" : "";
-  var successActions = chatbot.querySelector(".cb-success-actions");
-  var demoNote       = chatbot.querySelector(".cb-demo-note");
-  var copyBtn        = chatbot.querySelector("[data-cb-copy]");
-  var copyLabel      = chatbot.querySelector("[data-cb-copy-label]");
-
-  var timers = [];
-  var currentRun = 0;
-  var started = false;
-
-  function clearTimers() {
-    timers.forEach(function (t) { clearTimeout(t); clearInterval(t); });
-    timers = [];
-  }
-  function later(fn, ms) {
-    var id = setTimeout(fn, ms);
-    timers.push(id);
-    return id;
-  }
-  function setStatus(state, label) {
-    if (!statusEl || !statusTextEl) return;
-    statusEl.setAttribute("data-state", state);
-    statusTextEl.textContent = label;
-  }
-  function setProgress(idx) {
-    progressSegs.forEach(function (seg, i) {
-      seg.classList.toggle("is-active", i === idx);
-      seg.classList.toggle("is-done", i < idx);
-    });
-  }
-  function show(el) { if (el) el.classList.add("is-in"); }
-  function hide(el) { if (el) el.classList.remove("is-in"); }
-  function out(el) { if (el) { el.classList.remove("is-in"); el.classList.add("is-out"); } }
-
-  var allScenes = [sceneLanding, scenePicker, sceneDash, sceneChat, scenePreview, sceneCreating, sceneGform, sceneSuccess];
-  function showScene(target) {
-    allScenes.forEach(function (s) {
-      if (!s) return;
-      s.classList.remove("is-out");
-      if (s === target) s.classList.add("is-in");
-      else s.classList.remove("is-in");
-    });
-  }
-
-  function moveCursorTo(el, offsetX, offsetY) {
-    if (!cursorEl || !el || !stageEl) return;
-    var stageRect = stageEl.getBoundingClientRect();
-    var rect = el.getBoundingClientRect();
-    var x = rect.left - stageRect.left + (offsetX != null ? offsetX : rect.width / 2);
-    var y = rect.top - stageRect.top + (offsetY != null ? offsetY : rect.height / 2);
-    cursorEl.style.transform = "translate(" + x + "px, " + y + "px) scale(1)";
-  }
-  function showCursor() { if (cursorEl) cursorEl.classList.add("is-visible"); }
-  function hideCursor() { if (cursorEl) cursorEl.classList.remove("is-visible"); }
-  function cursorPress(cb) {
-    if (!cursorEl) { if (cb) cb(); return; }
-    cursorEl.classList.add("is-clicking");
-    later(function () { cursorEl.classList.remove("is-clicking"); }, 500);
-    if (cb) later(cb, 260);
-  }
-
-  function typeInto(el, text, speed, done) {
-    if (!el || !text) { if (done) done(); return; }
-    var i = 0;
-    var iv = setInterval(function () {
-      i += 1;
-      el.textContent = text.slice(0, i);
-      if (i >= text.length) {
-        clearInterval(iv);
-        if (done) done();
-      }
-    }, speed);
-    timers.push(iv);
-  }
-
-  function reset() {
-    clearTimers();
-    currentRun++;
-
-    hideCursor();
-    if (cursorEl) cursorEl.style.transform = "translate(-100px, -100px) scale(0.95)";
-
-    miniSigninEls.forEach(function (el) { el.classList.remove("is-hover", "is-pressed"); });
-    if (primaryAccount) primaryAccount.classList.remove("is-hover", "is-pressed");
-
-    if (userTextEl) userTextEl.textContent = "";
-    if (userMsgEl) userMsgEl.classList.remove("is-in", "is-typing");
-    if (aiThinkingEl) aiThinkingEl.classList.remove("is-in");
-    if (aiReplyEl) aiReplyEl.classList.remove("is-in");
-    if (loadingLabel) loadingLabel.textContent = "Preparing your questions…";
-
-    if (formEyebrow) formEyebrow.classList.remove("is-in");
-    if (formTitle) formTitle.classList.remove("is-in");
-    if (formSub) formSub.classList.remove("is-in");
-    formFields.forEach(function (f) { f.classList.remove("is-in", "is-highlight"); });
-    if (formActions) formActions.classList.remove("is-in");
-    if (formNote) formNote.classList.remove("is-in");
-
-    if (confirmBtn) confirmBtn.classList.remove("is-pressed");
-    if (confirmLabel) confirmLabel.textContent = "Confirm & Create Form";
-
-    if (gformBadge) gformBadge.classList.remove("is-in");
-
-    if (successIcon) successIcon.classList.remove("is-in");
-    if (successTitle) successTitle.classList.remove("is-in");
-    if (successSub) successSub.classList.remove("is-in");
-    if (linkField) linkField.classList.remove("is-in", "is-copied");
-    if (linkTextEl) linkTextEl.textContent = "";
-    if (successActions) successActions.classList.remove("is-in");
-    if (demoNote) demoNote.classList.remove("is-in");
-    if (copyLabel) copyLabel.textContent = "Copy Link";
-
-    setStatus("idle", "Ready");
-    setProgress(0);
-  }
-
-  function play() {
-    reset();
-    var run = currentRun;
-
-    if (reduceMotion) {
-      showScene(sceneSuccess);
-      if (successIcon) successIcon.classList.add("is-in");
-      if (successTitle) successTitle.classList.add("is-in");
-      if (successSub) successSub.classList.add("is-in");
-      if (linkField) linkField.classList.add("is-in");
-      if (linkTextEl) linkTextEl.textContent = linkText;
-      if (successActions) successActions.classList.add("is-in");
-      if (demoNote) demoNote.classList.add("is-in");
-      setStatus("success", "Done");
-      setProgress(7);
-      if (replayBtn) replayBtn.hidden = false;
-      return;
-    }
-
-    /* Scene 0: Mini landing page — cursor clicks Sign in */
-    showScene(sceneLanding);
-    setStatus("idle", "On the landing page");
-    setProgress(0);
-
-    later(function () {
-      if (run !== currentRun) return;
-      if (cursorEl && stageEl) {
-        cursorEl.style.transform = "translate(" + (stageEl.offsetWidth - 30) + "px, " + (stageEl.offsetHeight - 20) + "px) scale(0.95)";
-        void cursorEl.offsetWidth;
-      }
-      showCursor();
-    }, 400);
-
-    later(function () {
-      if (run !== currentRun) return;
-      var target = miniSigninEls[0];
-      if (target) moveCursorTo(target, 40, 22);
-    }, 700);
-
-    later(function () {
-      if (run !== currentRun) return;
-      miniSigninEls.forEach(function (el) { el.classList.add("is-hover"); });
-    }, 1700);
-
-    later(function () {
-      if (run !== currentRun) return;
-      miniSigninEls.forEach(function (el) { el.classList.add("is-pressed"); });
-      cursorPress(function () {
-        if (run !== currentRun) return;
-        miniSigninEls.forEach(function (el) { el.classList.remove("is-hover", "is-pressed"); });
-        hideCursor();
-        scenePickerPlay(run);
-      });
-    }, 2200);
-  }
-
-  /* Scene 1: Google account picker */
-  function scenePickerPlay(run) {
-    setStatus("busy", "Choose an account");
-    setProgress(1);
-    showScene(scenePicker);
-
-    later(function () {
-      if (run !== currentRun) return;
-      showCursor();
-      if (primaryAccount) moveCursorTo(primaryAccount, 40, 22);
-    }, 300);
-
-    later(function () {
-      if (run !== currentRun) return;
-      if (primaryAccount) primaryAccount.classList.add("is-hover");
-    }, 1200);
-
-    later(function () {
-      if (run !== currentRun) return;
-      if (primaryAccount) primaryAccount.classList.add("is-pressed");
-      cursorPress(function () {
-        if (run !== currentRun) return;
-        if (primaryAccount) primaryAccount.classList.remove("is-hover", "is-pressed");
-        hideCursor();
-        sceneDashboardPlay(run);
-      });
-    }, 2200);
-  }
-
-  /* Scene 2: Dashboard */
-  function sceneDashboardPlay(run) {
-    setStatus("success", "Signed in");
-    setProgress(2);
-    showScene(sceneDash);
-
-    later(function () {
-      if (run !== currentRun) return;
-      sceneChatPlay(run);
-    }, 2400);
-  }
-
-  /* Scene 3: Chat page — prompt types */
-  function sceneChatPlay(run) {
-    setStatus("busy", "Typing…");
-    setProgress(3);
-    showScene(sceneChat);
-
-    later(function () {
-      if (run !== currentRun) return;
-      if (userMsgEl) userMsgEl.classList.add("is-in", "is-typing");
-      later(function () {
-        if (run !== currentRun) return;
-        typeInto(userTextEl, userText, 26, function () {
-          if (run !== currentRun) return;
-          if (userMsgEl) userMsgEl.classList.remove("is-typing");
-          sceneAIThinking(run);
-        });
-      }, 260);
-    }, 500);
-  }
-
-  function sceneAIThinking(run) {
-    setStatus("busy", "Thinking…");
-    later(function () {
-      if (run !== currentRun) return;
-      show(aiThinkingEl);
-
-      later(function () {
-        if (run !== currentRun) return;
-        if (loadingLabel) loadingLabel.textContent = "Designing your fields…";
-      }, 900);
-
-      later(function () {
-        if (run !== currentRun) return;
-        hide(aiThinkingEl);
-        show(aiReplyEl);
-        later(function () {
-          if (run !== currentRun) return;
-          scenePreviewBuild(run);
-        }, 850);
-      }, 1700);
-    }, 320);
-  }
-
-  /* Scene 4: Preview builds */
-  function scenePreviewBuild(run) {
-    setStatus("busy", "Preparing…");
-    setProgress(4);
-    showScene(scenePreview);
-
-    later(function () { if (run === currentRun) show(formEyebrow); }, 260);
-    later(function () { if (run === currentRun) show(formTitle); }, 420);
-    later(function () { if (run === currentRun) show(formSub); }, 560);
-
-    var fieldStart = 750;
-    var stride = 240;
-    formFields.forEach(function (field, idx) {
-      var base = fieldStart + idx * stride;
-      later(function () {
-        if (run !== currentRun) return;
-        field.classList.add("is-in");
-        later(function () {
-          if (run !== currentRun) return;
-          field.classList.add("is-highlight");
-          later(function () {
-            if (run !== currentRun) return;
-            field.classList.remove("is-highlight");
-          }, 480);
-        }, 100);
-      }, base);
-    });
-
-    var afterFields = fieldStart + formFields.length * stride;
-
-    later(function () { if (run === currentRun) show(formActions); }, afterFields);
-    later(function () { if (run === currentRun) show(formNote); }, afterFields + 280);
-
-    later(function () {
-      if (run !== currentRun) return;
-      showCursor();
-      if (confirmBtn) moveCursorTo(confirmBtn, 40, 18);
-    }, afterFields + 900);
-
-    later(function () {
-      if (run !== currentRun) return;
-      if (confirmBtn) confirmBtn.classList.add("is-pressed");
-      cursorPress(function () {
-        if (run !== currentRun) return;
-        if (confirmBtn) confirmBtn.classList.remove("is-pressed");
-        if (confirmLabel) confirmLabel.textContent = "Creating…";
-        hideCursor();
-        sceneCreatingPlay(run);
-      });
-    }, afterFields + 1900);
-  }
-
-  /* Scene 5: Creating spinner */
-  function sceneCreatingPlay(run) {
-    setStatus("busy", "Creating…");
-    setProgress(5);
-    showScene(sceneCreating);
-
-    later(function () {
-      if (run !== currentRun) return;
-      sceneGformShow(run);
-    }, 1800);
-  }
-
-  /* Scene 6: REAL Google Form */
-  function sceneGformShow(run) {
-    setStatus("success", "Form created");
-    setProgress(6);
-    showScene(sceneGform);
-
-    later(function () {
-      if (run !== currentRun) return;
-      if (gformBadge) gformBadge.classList.add("is-in");
-    }, 800);
-
-    later(function () {
-      if (run !== currentRun) return;
-      if (gformBadge) gformBadge.classList.remove("is-in");
-      later(function () {
-        if (run !== currentRun) return;
-        sceneSuccessPlay(run);
-      }, 480);
-    }, 4200);
-  }
-
-  /* Scene 7: Success */
-  function sceneSuccessPlay(run) {
-    setProgress(7);
-    showScene(sceneSuccess);
-
-    later(function () { if (run === currentRun) show(successIcon); }, 140);
-    later(function () { if (run === currentRun) show(successTitle); }, 380);
-    later(function () { if (run === currentRun) show(successSub); }, 520);
-
-    later(function () {
-      if (run !== currentRun) return;
-      if (linkField) linkField.classList.add("is-in");
-      typeInto(linkTextEl, linkText, 22);
-    }, 700);
-
-    later(function () { if (run === currentRun) show(successActions); }, 1400);
-    later(function () {
-      if (run !== currentRun) return;
-      if (demoNote) demoNote.classList.add("is-in");
-      if (replayBtn) replayBtn.hidden = false;
-    }, 1700);
-
-    /* Loop */
-    later(function () {
-      if (run !== currentRun) return;
-      out(sceneSuccess);
-      later(function () {
-        if (run !== currentRun) return;
-        play();
-      }, 520);
-    }, 6800);
-  }
-
-  function startOnce() {
-    if (started) return;
-    started = true;
-    play();
-  }
-
-  if (!("IntersectionObserver" in window)) {
-    startOnce();
-  } else {
-    var obs = new IntersectionObserver(
-      function (entries) {
-        entries.forEach(function (entry) {
-          if (entry.isIntersecting) {
-            startOnce();
-            obs.disconnect();
+      var row = el('div', { class: 'opt-row' }, [mark, input]);
+      if (q.type !== 'true_false') {
+        row.appendChild(el('button', {
+          type: 'button', class: 'btn btn-sm btn-outline-danger', text: 'x', title: 'Remove option',
+          onclick: function () {
+            var removed = q.options.splice(oi, 1)[0];
+            q.correct = q.correct.filter(function (c) { return c !== removed; });
+            render(); autosave();
           }
-        });
-      },
-      { threshold: 0.3 }
-    );
-    obs.observe(chatbot);
-  }
-
-  if (replayBtn) {
-    replayBtn.addEventListener("click", function () {
-      replayBtn.hidden = true;
-      play();
+        }));
+      }
+      box.appendChild(row);
     });
+    if (q.type !== 'true_false') {
+      box.appendChild(el('button', {
+        type: 'button', class: 'btn btn-sm btn-outline-secondary', text: 'Add option',
+        onclick: function () { q.options.push(''); render(); }
+      }));
+    }
+    return box;
   }
 
-  if (copyBtn) {
-    copyBtn.addEventListener("click", function (e) {
-      e.preventDefault();
-      if (linkField) linkField.classList.add("is-copied");
-      if (copyLabel) copyLabel.textContent = "Copied (demo)";
-      later(function () {
-        if (linkField) linkField.classList.remove("is-copied");
-        if (copyLabel) copyLabel.textContent = "Copy Link";
-      }, 1800);
+  function questionCard(q, i) {
+    q._id = q._id || ('q' + i + '-' + Math.random().toString(36).slice(2, 7));
+    var header = el('div', { class: 'd-flex flex-wrap align-items-center gap-2 mb-2' }, [
+      el('strong', { text: 'Question ' + (i + 1) }),
+      el('span', { class: 'badge badge-type', text: LABELS[q.type] || q.type }),
+      q.required ? el('span', { class: 'text-danger small', text: '* required' }) : el('span', { class: 'text-secondary small', text: 'optional' }),
+      el('span', { class: 'ms-auto d-inline-flex gap-1' }, [
+        el('button', { type: 'button', class: 'btn btn-sm btn-outline-secondary', text: 'Up', onclick: function () { move(i, -1); } }),
+        el('button', { type: 'button', class: 'btn btn-sm btn-outline-secondary', text: 'Down', onclick: function () { move(i, 1); } }),
+        el('button', {
+          type: 'button', class: 'btn btn-sm btn-outline-danger', text: 'Delete',
+          onclick: function () { spec.questions.splice(i, 1); render(); autosave(); }
+        })
+      ])
+    ]);
+
+    var textArea = el('textarea', {
+      class: 'form-control mb-2', rows: 2, maxlength: 1000, value: q.text, 'aria-label': 'Question text',
+      oninput: function (ev) { q.text = ev.target.value; autosave(); }
     });
-  }
-
-  var openBtn = chatbot.querySelector("[data-cb-open]");
-  if (openBtn) openBtn.addEventListener("click", function (e) { e.preventDefault(); });
-
-  var backToTop = document.querySelector("[data-back-to-top]");
-  if (backToTop) {
-    backToTop.addEventListener("click", function (e) {
-      e.preventDefault();
-      window.scrollTo({ top: 0, behavior: reduceMotion ? "auto" : "smooth" });
+    var typeSel = el('select', {
+      class: 'form-select form-select-sm', 'aria-label': 'Question type',
+      onchange: function (ev) { setType(q, ev.target.value); render(); autosave(); }
+    }, TYPES.map(function (t) {
+      var o = el('option', { value: t[0], text: t[1] });
+      if (t[0] === q.type) o.selected = true;
+      return o;
+    }));
+    var req = el('input', {
+      type: 'checkbox', class: 'form-check-input', id: 'req-' + q._id,
+      onchange: function (ev) { q.required = ev.target.checked; render(); autosave(); }
     });
+    req.checked = !!q.required;
+    var controls = el('div', { class: 'd-flex flex-wrap gap-3 align-items-center mb-2' }, [
+      el('div', { style: 'min-width: 220px' }, [typeSel]),
+      el('div', { class: 'form-check m-0' }, [req, el('label', { class: 'form-check-label', for: 'req-' + q._id, text: 'Required' })])
+    ]);
+    if (spec.is_quiz && CHOICE[q.type]) {
+      controls.appendChild(el('label', { class: 'small text-secondary', text: 'Points ' }, [
+        el('input', {
+          type: 'number', min: 0, max: 100, value: q.points, class: 'form-control form-control-sm d-inline-block', style: 'width: 80px',
+          oninput: function (ev) { q.points = parseInt(ev.target.value || '0', 10) || 0; autosave(); }
+        })
+      ]));
+    }
+
+    var body = [header, textArea, controls];
+    if (CHOICE[q.type]) {
+      body.push(optionRows(q));
+      if (spec.is_quiz) body.push(el('div', { class: 'form-text', text: q.type === 'checkbox' ? 'Tick every correct answer.' : 'Select the correct answer.' }));
+    } else if (q.type === 'file_upload') {
+      body.push(el('div', { class: 'form-text', text: 'Respondents will upload a file (up to 10 MB). Available in custom forms only.' }));
+    }
+    return el('div', { class: 'card q-card mb-3' }, [el('div', { class: 'card-body' }, body)]);
   }
+
+  function render() {
+    root.textContent = '';
+    var title = el('input', {
+      class: 'form-control form-control-lg mb-2', value: spec.title, maxlength: 200, placeholder: 'Form title',
+      'aria-label': 'Form title', oninput: function (ev) { spec.title = ev.target.value; autosave(); }
+    });
+    var desc = el('textarea', {
+      class: 'form-control mb-2', rows: 2, maxlength: 2000, placeholder: 'Description (optional)', value: spec.description || '',
+      'aria-label': 'Form description', oninput: function (ev) { spec.description = ev.target.value; autosave(); }
+    });
+    var quiz = el('input', {
+      type: 'checkbox', class: 'form-check-input', id: 'quiz',
+      onchange: function (ev) { spec.is_quiz = ev.target.checked; render(); autosave(); }
+    });
+    quiz.checked = !!spec.is_quiz;
+    root.appendChild(el('div', { class: 'card mb-3' }, [el('div', { class: 'card-body' }, [
+      title, desc,
+      el('div', { class: 'form-check' }, [quiz, el('label', { class: 'form-check-label', for: 'quiz', text: 'This is a quiz (mark correct answers and points)' })])
+    ])]));
+
+    spec.questions.forEach(function (q, i) { root.appendChild(questionCard(q, i)); });
+
+    root.appendChild(el('button', {
+      type: 'button', class: 'btn btn-outline-primary', text: 'Add question',
+      onclick: function () {
+        spec.questions.push({ type: 'multiple_choice', text: '', options: ['Option 1', 'Option 2'], required: true, correct: [], points: 1 });
+        render(); autosave();
+      }
+    }));
+    syncDestination();
+  }
+
+  createForm.addEventListener('submit', function (ev) {
+    ev.preventDefault();
+    clearTimeout(saveTimer);
+    confirmBtn.disabled = true;
+    save().then(function (ok) {
+      if (ok) { createForm.submit(); }
+      else { confirmBtn.disabled = false; window.scrollTo({ top: 0, behavior: 'smooth' }); }
+    });
+  });
+
+  render();
 })();
