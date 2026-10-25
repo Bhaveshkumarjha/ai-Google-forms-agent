@@ -32,12 +32,13 @@
 
       <nav class="nav-links" id="nav-menu" aria-label="Page sections" data-nav-menu>
         <a href="#top">Home</a>
+        <a href="#developer">About</a>
         <a href="#how">How it works</a>
         <a href="#features">Features</a>
         <!-- SERVICES: add a <section id="services"> further down the page; this link will scroll to it. -->
         <a href="#services">Services</a>
         <a href="#forms">Form types</a>
-        <a href="#developer">About</a>
+        <a href="#products">Products</a>
         <a href="#faq">FAQ</a>
         <a class="btn btn-primary btn-small nav-cta" href="{{ url_for('auth.login') }}">Sign in</a>
       </nav>
@@ -757,7 +758,7 @@
       <div class="ad-slot reveal" data-ad-slot="banner-1">
         <p class="ad-label">Advertisement</p>
         <div class="ad-box ad-banner">
-          
+            <!--<div class="ad-placeholder"><span class="ad-size">970 × 90</span><span>Your ad goes here</span></div>-->
         </div>
       </div>
     </div>
@@ -794,25 +795,47 @@
         <p class="section-lede">Tools built with the same care as FormPilot AI.</p>
       </header>
       <div class="promo-grid">
-        <a class="promo-card reveal" href="#products">
-          <div class="promo-art promo-art-1" aria-hidden="true"><svg width="30" height="30" viewBox="0 0 24 24" fill="none"><path d="M12 3l2.5 5.5L20 9l-4 4 1 6-5-3-5 3 1-6-4-4 5.5-.5L12 3z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg></div>
-          <span class="promo-tag">Your product</span>
-          <h3>Product name one</h3>
-          <p>A short line about what this product does and who it is for.</p>
+        <a class="promo-card reveal" href="https://bhavdocs-2.onrender.com/">
+          <div class="promo-art promo-art-1" aria-hidden="true"><img
+        src="{{ url_for('static', filename='ads/bhavdocs1.png') }}"
+        alt="BhavDocs Document Management System"
+        class="promo-product-image"
+    >
+  </div>
+          <span class="promo-tag">our product</span>
+          <h3>BhavDocs</h3>
+          <p style="text-align: justify;">
+  BhavDocs is a smart Document Management System (DMS) designed to help
+  businesses securely store, organize, and manage their documents in one
+  place. It simplifies document handling with a centralized platform built
+  for efficient teamwork and productivity.
+</p>
           <span class="promo-link">Learn more <svg width="12" height="12" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
         </a>
-        <a class="promo-card reveal" href="#products">
-          <div class="promo-art promo-art-2" aria-hidden="true"><svg width="30" height="30" viewBox="0 0 24 24" fill="none"><rect x="4" y="5" width="16" height="14" rx="3" stroke="currentColor" stroke-width="1.6"/><path d="M8 10h8M8 14h5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></div>
-          <span class="promo-tag">Your product</span>
-          <h3>Product name two</h3>
-          <p>A short line about what this product does and who it is for.</p>
+        <a class="promo-card reveal" href="https://testportal.pythonanywhere.com/">
+          <div class="promo-art promo-art-2" aria-hidden="true">
+            <img
+        src="{{ url_for('static', filename='ads/testportal.png') }}"
+        alt="TestPortal"
+        class="promo-product-image"
+    >
+          </div>
+          <span class="promo-tag">our Product</span>
+          <h3>TestPortal</h3>
+          <p  style="text-align: justify;">TestPortal is an online examination platform designed for coaching institutes, teachers, and educational institutions. Create and conduct online exams, coding assessments, and practice tests with automated grading and performance reports.</p>
           <span class="promo-link">Learn more <svg width="12" height="12" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
         </a>
-        <a class="promo-card reveal" href="#products">
-          <div class="promo-art promo-art-3" aria-hidden="true"><svg width="30" height="30" viewBox="0 0 24 24" fill="none"><path d="M5 19V9m7 10V5m7 14v-7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></div>
-          <span class="promo-tag">Coming soon</span>
-          <h3>Product name three</h3>
-          <p>A short line about what this product does and who it is for.</p>
+        <a class="promo-card reveal" href="https://passdesk.pythonanywhere.com/">
+          <div class="promo-art promo-art-3" aria-hidden="true">
+            <img
+        src="{{ url_for('static', filename='ads/passdeskd.png') }}"
+        alt="PassDesk"
+        class="promo-product-image"
+    >
+            </svg></div>
+          <span class="promo-tag">Our Product</span>
+          <h3>PassDesk</h3>
+          <p style="text-align: justify;">PassDesk is a digital platform designed to simplify pass management and streamline administrative processes. It helps organizations manage pass-related activities efficiently through a centralized system.</p>
           <span class="promo-link">Learn more <svg width="12" height="12" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
         </a>
       </div>
@@ -838,9 +861,9 @@
       <div class="ad-slot reveal" data-ad-slot="banner-2">
         <p class="ad-label">Advertisement</p>
         <div class="ad-box ad-banner">
-          <a href="https://bhavdocs-2.onrender.com/" rel="sponsored noopener" target="_blank">
+          <!--<a href="https://bhavdocs-2.onrender.com/" rel="sponsored noopener" target="_blank">
   <img src="{{ url_for('static', filename='ads/image.png') }}" alt="BhavDocs" width="970" height="50">
-</a>
+</a>-->
         </div>
       </div>
     </div>
@@ -870,7 +893,17 @@
       <div class="footer-cols">
         <div class="footer-col"><h3>Product</h3><ul><li><a href="#how">How it works</a></li><li><a href="#features">Features</a></li><li><a href="#forms">Form types</a></li><li><a href="#products">More products</a></li><li><a href="#faq">FAQ</a></li></ul></div>
         <div class="footer-col"><h3>Legal</h3><ul><li><a href="{{ url_for('privacy_policy') }}">Privacy Policy</a></li><li><a href="{{ url_for('terms') }}">Terms of Service</a></li><li><a href="#developer">About the build</a></li></ul></div>
-        <div class="footer-col"><h3>Connect</h3><ul><li><a href="https://github.com/Bhaveshkumarjha" rel="noopener" target="_blank">GitHub<svg width="11" height="11" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M3 9l6-6M5 3h4v4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a></li><li><a href="https://www.linkedin.com/in/bhavesh-jha-51ab48246/" rel="noopener" target="_blank">LinkedIn<svg width="11" height="11" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M3 9l6-6M5 3h4v4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a></li><li><a href="{{ url_for('auth.login') }}">Sign in with Google</a></li></ul></div>
+        <div class="footer-col">
+          <h3>Connect</h3>
+          <ul>
+            <li><a href="https://github.com/Bhaveshkumarjha" rel="noopener" target="_blank">GitHub<svg width="11" height="11" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+            <path d="M3 9l6-6M5 3h4v4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg></a></li>
+              <li><a href="https://www.linkedin.com/in/bhavesh-jha-51ab48246/" rel="noopener" target="_blank">LinkedIn<svg width="11" height="11" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M3 9l6-6M5 3h4v4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a></li>
+              <li><a href="mailto:bhaveshkumarjha4@gmail.com"> bhaveshkumarjha4@gmail.com</a></li>
+              <li><a href="{{ url_for('auth.login') }}">Sign in with Google</a></li>
+
+            </ul></div>
       </div>
     </div>
 
