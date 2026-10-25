@@ -1,55 +1,97 @@
 {% extends 'base.html' %}
 {% block title %}Dashboard{% endblock %}
 {% block content %}
-<div class="d-flex flex-wrap justify-content-between align-items-center mb-3 gap-2">
-  <h1 class="h3 mb-0">Welcome, {{ current_user.name.split(' ')[0] if current_user.name else 'there' }}</h1>
-  <form method="post" action="{{ url_for('main.chat_new') }}">
+{% set first = current_user.name.split(' ')[0] if current_user.name else 'there' %}
+
+<!-- Page header -->
+<header class="page-head rv rv-1">
+  <div>
+    <h1 class="page-title">Welcome back, <span class="grad">{{ first }}</span></h1>
+    <p class="page-sub">Your forms in one place.</p>
+  </div>
+  <form method="post" action="{{ url_for('main.chat_new') }}" class="m-0">
     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-    <button class="btn btn-primary">Create a new form</button>
+    <button class="btn-grad" type="submit">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
+      <span>New form</span>
+    </button>
   </form>
-</div>
+</header>
 
-<div class="row g-3 mb-4">
-  <div class="col-6 col-lg-3"><div class="card stat"><div class="card-body"><div class="stat-n">{{ stats.total }}</div><div class="text-secondary small">Forms</div></div></div></div>
-  <div class="col-6 col-lg-3"><div class="card stat"><div class="card-body"><div class="stat-n">{{ stats.google }}</div><div class="text-secondary small">Google Forms</div></div></div></div>
-  <div class="col-6 col-lg-3"><div class="card stat"><div class="card-body"><div class="stat-n">{{ stats.custom }}</div><div class="text-secondary small">Custom forms</div></div></div></div>
-  <div class="col-6 col-lg-3"><div class="card stat"><div class="card-body"><div class="stat-n">{{ stats.responses }}</div><div class="text-secondary small">Custom form responses</div></div></div></div>
-</div>
+<!-- Overview -->
+<section class="stats rv rv-2" aria-label="Overview">
+  <article class="stat-card">
+    <span class="stat-ico" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M7 3.5h7.5L19 8v12.5H7V3.5z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M14 3.5V8h5M10 12.5h6M10 16h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span>
+    <div class="stat-body"><p class="stat-label">Total forms</p><p class="stat-num">{{ stats.total }}</p></div>
+  </article>
+  <article class="stat-card">
+    <span class="stat-ico" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><rect x="4" y="4" width="16" height="16" rx="3" stroke="currentColor" stroke-width="1.7"/><path d="M8.5 12.2l2.4 2.4 4.6-5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+    <div class="stat-body"><p class="stat-label">Google Forms</p><p class="stat-num">{{ stats.google }}</p></div>
+  </article>
+  <article class="stat-card">
+    <span class="stat-ico" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M4 7h10M18 7h2M4 17h2M10 17h10" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/><circle cx="16" cy="7" r="2" stroke="currentColor" stroke-width="1.7"/><circle cx="8" cy="17" r="2" stroke="currentColor" stroke-width="1.7"/></svg></span>
+    <div class="stat-body"><p class="stat-label">Hosted forms</p><p class="stat-num">{{ stats.custom }}</p></div>
+  </article>
+  <article class="stat-card">
+    <span class="stat-ico" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M4 13l2.2-6.2A2 2 0 018.1 5.5h7.8a2 2 0 011.9 1.3L20 13v4.5a2 2 0 01-2 2H6a2 2 0 01-2-2V13z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M4 13h4l1.2 2h5.6L16 13h4" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg></span>
+    <div class="stat-body"><p class="stat-label">Hosted responses</p><p class="stat-num">{{ stats.responses }}</p></div>
+  </article>
+</section>
 
-<div class="row g-3">
-  <div class="col-lg-7">
-    <div class="card"><div class="card-header d-flex justify-content-between">
-      <span class="fw-semibold">Recent forms</span><a href="{{ url_for('main.forms_history') }}">View all</a>
-    </div>
-    <ul class="list-group list-group-flush">
+<!-- Main grid -->
+<div class="dash-grid">
+
+  <!-- Recent forms -->
+  <section class="panel rv rv-3" aria-labelledby="rf-title">
+    <header class="panel-head">
+      <h2 id="rf-title" class="panel-title">Recent forms</h2>
+      <a class="panel-link" href="{{ url_for('main.forms_history') }}">View all</a>
+    </header>
+
+    {% if recent_forms %}
+    <ul class="rows">
       {% for f in recent_forms %}
-      <li class="list-group-item d-flex justify-content-between align-items-center gap-2">
-        <div class="text-truncate">
-          <div class="fw-semibold text-truncate">{{ f.title }}</div>
-          <div class="small text-secondary">{{ f.created_at.strftime('%d %b %Y') }}</div>
+      <li class="row-item">
+        <span class="row-ico {{ 'is-google' if f.kind == 'google' else '' }}" aria-hidden="true">
+          {% if f.kind == 'google' %}
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><rect x="4" y="4" width="16" height="16" rx="3" stroke="currentColor" stroke-width="1.7"/><path d="M8.5 9h7M8.5 12h7M8.5 15h4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+          {% else %}
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M4 7h10M18 7h2M4 17h2M10 17h10" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/><circle cx="16" cy="7" r="2" stroke="currentColor" stroke-width="1.7"/><circle cx="8" cy="17" r="2" stroke="currentColor" stroke-width="1.7"/></svg>
+          {% endif %}
+        </span>
+        <div class="row-main">
+          <p class="row-title">{{ f.title }}</p>
+          <p class="row-meta">
+            <span>{{ f.created_at.strftime('%d %b %Y') }}</span>
+            <span class="row-dot" aria-hidden="true"></span>
+            <span>{{ 'Google Form' if f.kind == 'google' else 'Hosted form' }}</span>
+            {% if f.status == 'partial' %}<span class="row-dot" aria-hidden="true"></span><span class="status status-warn">Needs attention</span>{% elif f.status == 'failed' %}<span class="row-dot" aria-hidden="true"></span><span class="status status-bad">Failed</span>{% endif %}
+          </p>
         </div>
-        <div class="d-flex align-items-center gap-2">
-          <span class="badge {{ 'text-bg-primary' if f.kind == 'google' else 'text-bg-secondary' }}">{{ 'Google Form' if f.kind == 'google' else 'Custom' }}</span>
-          {% if f.responder_url %}<a class="btn btn-sm btn-outline-primary" href="{{ f.responder_url }}" target="_blank" rel="noopener">Open</a>{% endif %}
+        <div class="row-actions">
+          {% if f.kind == 'custom' %}<a class="chip-btn" href="{{ url_for('main.responses', form_id=f.id) }}">Responses</a>{% endif %}
+          {% if f.responder_url %}
+          <button class="chip-btn" type="button" data-copy-text="{{ f.responder_url }}">Copy link</button>
+          <a class="chip-btn chip-primary" href="{{ f.responder_url }}" target="_blank" rel="noopener">Open
+            <svg width="11" height="11" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M3 9l6-6M5 3h4v4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </a>
+          {% endif %}
         </div>
       </li>
-      {% else %}
-      <li class="list-group-item text-secondary">No forms yet. Start a chat and describe the form you need.</li>
       {% endfor %}
-    </ul></div>
-  </div>
-  <div class="col-lg-5">
-    <div class="card"><div class="card-header fw-semibold">Recent chats</div>
-    <ul class="list-group list-group-flush">
-      {% for d in chats %}
-      <li class="list-group-item d-flex justify-content-between align-items-center">
-        <a class="text-truncate me-2" href="{{ url_for('main.chat', draft_id=d.id) }}">{{ d.title }}</a>
-        <span class="badge text-bg-light">{{ 'created' if d.status == 'created' else 'draft' }}</span>
-      </li>
-      {% else %}
-      <li class="list-group-item text-secondary">No chats yet.</li>
-      {% endfor %}
-    </ul></div>
-  </div>
+    </ul>
+    {% else %}
+    <div class="empty">
+      <span class="empty-ico" aria-hidden="true"><svg width="26" height="26" viewBox="0 0 24 24" fill="none"><path d="M7 3.5h7.5L19 8v12.5H7V3.5z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M14 3.5V8h5M10 12.5h6M10 16h4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></span>
+      <h3 class="empty-title">No forms yet</h3>
+      <p class="empty-text">Describe the form you need and it will appear here once it is created.</p>
+      <form method="post" action="{{ url_for('main.chat_new') }}" class="m-0">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <button class="btn-ink btn-ink-sm" type="submit">Create your first form</button>
+      </form>
+    </div>
+    {% endif %}
+  </section>
+
 </div>
 {% endblock %}
